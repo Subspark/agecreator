@@ -1,0 +1,5 @@
+#summary Checkout instructions for source code
+
+{{{
+svn checkout http://agecreator.googlecode.com/svn/trunk/agecreator
+}}}
