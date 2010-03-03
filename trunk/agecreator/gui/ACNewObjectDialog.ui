@@ -32,9 +32,17 @@
    </item>
    <item>
     <widget class="QComboBox" name="objectType">
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
      <item>
       <property name="text">
        <string>Spawn Point</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>World Object (No Physics)</string>
       </property>
      </item>
     </widget>

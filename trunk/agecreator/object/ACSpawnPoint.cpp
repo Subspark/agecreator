@@ -42,6 +42,7 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
 ACSpawnPoint::ACSpawnPoint(plKey key)
   : ACObject(key)
 {
+  // TODO: make this more robust to allow spawn points with other modifiers
   spawn = static_cast<plSpawnModifier*>(scene_object->getModifier(0)->getObj());
   coord = static_cast<plCoordinateInterface*>(scene_object->getCoordInterface()->getObj());
 }

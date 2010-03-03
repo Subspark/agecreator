@@ -19,6 +19,7 @@
 
 #include "ACLayer.h"
 #include "ACAge.h"
+#include "ACDrawable.h"
 #include "ACObject.h"
 #include "ACSpawnPoint.h"
 #include "ACUtil.h"
@@ -83,12 +84,17 @@ void ACLayer::addObject(ACObject *obj)
   obj->registerWithPage(this);
 }
 
+// This function could get much more complicated over time.
+// Need to find a better way to do this
 ACObject *ACLayer::createPlasmaObject(plKey key)
 {
   plSceneObject *obj = static_cast<plSceneObject*>(key->getObj());
   if(obj->getCoordInterface().Exists() && obj->getNumModifiers() == 1) {
     if(obj->getModifier(0)->getType() == kSpawnModifier)
       return new ACSpawnPoint(key);
+  }
+  if(obj->getDrawInterface().Exists() && !obj->getSimInterface().Exists()) {
+    return new ACDrawable(key);
   }
   return new ACObject(key);
 }
