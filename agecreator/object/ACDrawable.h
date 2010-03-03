@@ -22,14 +22,34 @@
 
 #include "ACObject.h"
 
+#include "Util/hsTArray.hpp"
 
+class plDrawableSpans;
+class plDrawInterface;
+class plGBufferVertex;
+
+//TODO: Make this class more robust. Currently it only supports the most basic drawables
 class ACDrawable : public ACObject
 {
   Q_OBJECT
 public:
+  ACDrawable(const QString &name);
+  ACDrawable(plKey key);
+  
+  void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char format);
+  
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
+
+//   Not yet implemented. Will support multi-material meshes and other cool stuff in an advanced
+//   format, whenever it gets implemented
+//   TODO: implement loadFromFile
+//   static ACDrawable *loadFromFile(const QString &filename);
+
+protected:
+  plDrawableSpans *span;
+  plDrawInterface *draw;
 };
 
 #endif // ACPHYSICSDRAWABLE_H

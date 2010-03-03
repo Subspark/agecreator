@@ -40,8 +40,10 @@
 #include <QRegExpValidator>
 #include <QStringList>
 
+// This must be kept in sync with the combo box in ACNewObjectDialog.ui
 enum objects {
-  idSpawnPoint
+  idSpawnPoint,
+  idDrawable
 };
 
 //TODO: Generate this from actual user fog settings
@@ -78,6 +80,7 @@ ACAge::ACAge(const QString& name)
 }
 
 ACAge::ACAge(const QString &filename, QObject *parent)
+  : QAbstractItemModel(parent)
 {
   age = manager->ReadAge(filename.toLocal8Bit().constData(), true);
   size_t num_pages = age->getNumPages();
@@ -109,7 +112,7 @@ ACAge::~ACAge()
 
 // Model/View functions
 
-int ACAge::columnCount(const QModelIndex &parent) const
+int ACAge::columnCount(const QModelIndex &/*parent*/) const
 {
   return 1;
 }

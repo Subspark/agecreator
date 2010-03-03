@@ -1,18 +1,19 @@
 project(AGECREATOR)
 cmake_minimum_required(VERSION 2.6)
-find_package(Plasma)
+find_package(HSPlasma)
 find_package(Qt4)
 
 set(PLASMA_DIR "./plasma" CACHE PATH "Location of Plasma library sources")
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
-if(NOT Plasma_FOUND)
+if(NOT HSPlasma_FOUND)
   file(RELATIVE_PATH PLASMA_RELATIVE_DIR ${AGECREATOR_SOURCE_DIR} ${PLASMA_DIR})
   add_subdirectory(${PLASMA_RELATIVE_DIR})
-else(NOT Plasma_FOUND)
+  include_directories(${PLASMA_RELATIVE_DIR}/core)
+else(NOT HSPlasma_FOUND)
   include_directories(${Plasma_INCLUDE_DIRS})
-endif(NOT Plasma_FOUND)
+endif(NOT HSPlasma_FOUND)
 
 include(${QT_USE_FILE})
 
@@ -27,6 +28,7 @@ set(AC_SRCS
     gui/ACMainWindow.cpp
     gui/ACNewLayerDialog.cpp
     gui/ACNewObjectDialog.cpp
+    object/ACDrawable.cpp
     object/ACObject.cpp
     object/ACSpawnPoint.cpp
 )
@@ -41,6 +43,7 @@ set(AC_HDRS
     gui/ACMainWindow.h
     gui/ACNewLayerDialog.h
     gui/ACNewObjectDialog.h
+    object/ACDrawable.h
     object/ACObject.h
     object/ACSpawnPoint.h
 )
@@ -62,4 +65,4 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 )
 
 add_executable(AgeCreator ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS})
-target_link_libraries(AgeCreator Plasma ${QT_LIBRARIES})
+target_link_libraries(AgeCreator HSPlasma ${QT_LIBRARIES})

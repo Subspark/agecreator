@@ -67,6 +67,7 @@ void ACObject::registerWithPage(ACPage *page)
   ACLayer *layer;
   if((layer = qobject_cast<ACLayer*>(page))) {
     layer->scene()->addSceneObject(scene_object->getKey());
+    scene_object->setSceneNode(layer->scene()->getKey());
   }
   setParent(page);
 }
@@ -77,6 +78,7 @@ void ACObject::unregisterFromPage(ACPage *page)
   ACLayer *layer;
   if((layer = qobject_cast<ACLayer*>(page))) {
     layer->scene()->delSceneObject(layer->scene()->getSceneObjects().find(scene_object->getKey()));
+    scene_object->setSceneNode(plKey());
   }
   setParent(0);
 }
