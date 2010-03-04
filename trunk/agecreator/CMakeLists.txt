@@ -58,11 +58,15 @@ set(AC_UIS
 QT4_WRAP_UI(AC_UI_HDRS ${AC_UIS})
 qt4_wrap_cpp(AC_MOC_SRCS ${AC_HDRS})
 
+if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  qt4_add_resources(AC_QRC_SRCS icons.qrc)
+endif(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
                 ${CMAKE_CURRENT_SOURCE_DIR}
                 ${CMAKE_CURRENT_SOURCE_DIR}/object
                 ${CMAKE_CURRENT_SOURCE_DIR}/gui
 )
 
-add_executable(AgeCreator ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS})
+add_executable(AgeCreator ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS} ${AC_QRC_SRCS})
 target_link_libraries(AgeCreator HSPlasma ${QT_LIBRARIES})
