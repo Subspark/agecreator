@@ -18,6 +18,7 @@
 */
 
 #include <QApplication>
+#include <QIcon>
 #include "ACMainWindow.h"
 #include "ACUtil.h"
 
@@ -26,6 +27,8 @@
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
+  if(QIcon::themeName().isEmpty())
+    QIcon::setThemeName(ascii("oxygen"));
   manager = new plResManager;
   ACMainWindow win;
   win.show();
