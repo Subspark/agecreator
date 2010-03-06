@@ -118,7 +118,7 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   info->setLocation(plLocation());
   manager->AddPage(info);
   plSceneNode *null_node = new plSceneNode;
-  null_node->init(toPlasma(name));
+  null_node->init(toPlasma(name()));
   manager->AddObject(plLocation(), null_node);
   dirty = false;
 }
