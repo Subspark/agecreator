@@ -31,7 +31,7 @@ class ACSpawnPoint : public ACObject
 public:
   ACSpawnPoint(const QString &name);
   ACSpawnPoint(plKey key);
-  ~ACSpawnPoint();
+  virtual ~ACSpawnPoint();
 
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);

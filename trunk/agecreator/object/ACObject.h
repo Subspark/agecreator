@@ -36,7 +36,7 @@ class ACObject : public QObject
 public:
   ACObject(const QString& name);
   ACObject(plKey key);
-  ~ACObject();
+  virtual ~ACObject();
 
   ACPage *page() const;
   QString name() const;

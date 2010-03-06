@@ -50,6 +50,7 @@ ACSpawnPoint::ACSpawnPoint(plKey key)
 ACSpawnPoint::~ACSpawnPoint()
 {
   manager->DelObject(spawn->getKey());
+  manager->DelObject(coord->getKey());
 }
 
 QIcon ACSpawnPoint::icon() const

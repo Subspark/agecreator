@@ -21,14 +21,17 @@
 #include "ACLayer.h"
 #include "ACNewLayerDialog.h"
 #include "ACNewObjectDialog.h"
+#include "ACUtil.h"
+
 #include "ACObject.h"
 #include "ACSpawnPoint.h"
-#include "ACUtil.h"
+#include "ACDrawable.h"
 
 #include <ResManager/plResManager.h>
 #include <ResManager/plAgeInfo.h>
 #include <PRP/KeyedObject/plLocation.h>
 #include <PRP/plPageInfo.h>
+#include <PRP/plSceneNode.h>
 #include <Stream/plEncryptedStream.h>
 
 #include <QDir>
@@ -76,6 +79,13 @@ ACAge::ACAge(const QString& name)
   textures = new ACPage(ascii("Textures"), -1, this);
   builtins = new ACPage(ascii("BuiltIn"), -2, this);
   addLayer(ascii("mainRoom"));
+  layers[0]->addObject(new ACSpawnPoint(ascii("LinkInPointDefault")));
+  plPageInfo *info = new plPageInfo;
+  info->setLocation(plLocation());
+  manager->AddPage(info);
+  plSceneNode *null_node = new plSceneNode;
+  null_node->init(toPlasma(name));
+  manager->AddObject(plLocation(), null_node);
   dirty = true;
 }
 
@@ -108,6 +118,7 @@ ACAge::ACAge(const QString &filename, QObject *parent)
 ACAge::~ACAge()
 {
   manager->DelAge(toPlasma(name()));
+  manager->DelPage(plLocation());
 }
 
 // Model/View functions
@@ -298,6 +309,9 @@ int ACAge::addObject(const QString &name, int object_type)
   switch(object_type) {
     case idSpawnPoint:
       new_object = new ACSpawnPoint(name);
+      break;
+    case idDrawable:
+      new_object = new ACDrawable(name);
       break;
     default:
       break;
