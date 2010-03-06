@@ -136,9 +136,9 @@ bool ACDrawable::loadFromFile(const QString &filename)
     } else if(line.startsWith('f')) {
       hsVector3 p0, p1, p2;
       unsigned short i0, i1, i2;
-      i0 = line.split(' ')[1].toShort();
-      i1 = line.split(' ')[2].toShort();
-      i2 = line.split(' ')[3].toShort();
+      i0 = line.split(' ')[1].split('/')[0].toShort();
+      i1 = line.split(' ')[2].split('/')[0].toShort();
+      i2 = line.split(' ')[3].split('/')[0].toShort();
       p0 = verts[i0].fPos;
       p1 = verts[i1].fPos;
       p2 = verts[i2].fPos;
