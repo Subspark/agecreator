@@ -80,6 +80,7 @@ ACAge::ACAge(const QString& name)
   builtins = new ACPage(ascii("BuiltIn"), -2, this);
   addLayer(ascii("mainRoom"));
   layers[0]->addObject(new ACSpawnPoint(ascii("LinkInPointDefault")));
+  // a "NULL" page, where objects that have been created but not yet assigned a page are stored
   plPageInfo *info = new plPageInfo;
   info->setLocation(plLocation());
   manager->AddPage(info);
@@ -112,6 +113,13 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   QString builtins_name = filepath.absoluteFilePath(name()+district+ascii("_BuiltIn.prp"));
   textures = new ACPage(manager->ReadPage(toPlasma(textures_name))->getLocation(), this);
   builtins = new ACPage(manager->ReadPage(toPlasma(builtins_name))->getLocation(), this);
+  // a "NULL" page, where objects that have been created but not yet assinged a page are stored
+  plPageInfo *info = new plPageInfo;
+  info->setLocation(plLocation());
+  manager->AddPage(info);
+  plSceneNode *null_node = new plSceneNode;
+  null_node->init(toPlasma(name));
+  manager->AddObject(plLocation(), null_node);
   dirty = false;
 }
 
