@@ -86,4 +86,4 @@ private slots:
   void idUpdated(int id, unsigned char fmt);
 };
 
-#endif // ACPHYSICSDRAWABLE_H
+#endif // ACDRAWABLE_H
