@@ -132,15 +132,27 @@ bool ACDrawable::loadFromFile(const QString &filename)
       v.fPos.X = line.split(' ')[1].toFloat();
       v.fPos.Y = line.split(' ')[2].toFloat();
       v.fPos.Z = line.split(' ')[3].toFloat();
-      v.fNormal.X = 0.0f;
-      v.fNormal.Y = 0.0f;
-      v.fNormal.Z = 1.0f;
       verts.append(v);
     } else if(line.startsWith('f')) {
-     indices.append(line.split(' ')[1].toShort());
-     indices.append(line.split(' ')[2].toShort());
-     indices.append(line.split(' ')[3].toShort());
+      hsVector3 p0, p1, p2;
+      unsigned short i0, i1, i2;
+      i0 = line.split(' ')[1].toShort();
+      i1 = line.split(' ')[2].toShort();
+      i2 = line.split(' ')[3].toShort();
+      p0 = verts[i0].fPos;
+      p1 = verts[i1].fPos;
+      p2 = verts[i2].fPos;
+      hsVector3 n = (p1-p0).crossP(p2-p0);
+      verts[i0].fNormal = verts[i0].fNormal + n;
+      verts[i1].fNormal = verts[i1].fNormal + n;
+      verts[i2].fNormal = verts[i2].fNormal + n;
+      indices.append(i0);
+      indices.append(i1);
+      indices.append(i2);
     }
+  }
+  for(size_t i = 0; i < verts.getSize(); i++) {
+    verts[i].fNormal = verts[i].fNormal * (1.0 / verts[i].fNormal.magnitude());
   }
   setMeshData(verts, indices, (unsigned char)plGBufferGroup::kEncoded);
   return true;
