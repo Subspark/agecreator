@@ -1,7 +1,0 @@
-#summary Checkout instructions for source code
-[http://code.google.com/p/agecreator/source/list History]
-
-[http://code.google.com/p/agecreator/source/browse Browse]
-{{{
-svn checkout http://agecreator.googlecode.com/svn/trunk/agecreator
-}}}
