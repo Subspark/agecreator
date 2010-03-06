@@ -36,6 +36,7 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
   manager->AddObject(plLocation(), spawn);
   manager->AddObject(plLocation(), coord);
   scene_object->setCoordInterface(coord->getKey());
+  coord->setOwner(scene_object->getKey());
   scene_object->addModifier(spawn->getKey());
 }
 

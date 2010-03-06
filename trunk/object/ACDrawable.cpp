@@ -25,6 +25,8 @@
 #include <PRP/Geometry/plGBufferGroup.h>
 #include <PRP/Object/plDrawInterface.h>
 #include <PRP/Object/plSceneObject.h>
+#include <PRP/Surface/hsGMaterial.h>
+#include <PRP/Surface/plLayer.h>
 #include <PRP/plSceneNode.h>
 
 #include <climits>
@@ -39,6 +41,7 @@ ACDrawable::ACDrawable(const QString &name)
 {
   draw = new plDrawInterface;
   draw->init(toPlasma(name));
+  draw->setOwner(scene_object->getKey());
   spans = getSpans(plLocation());
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   manager->AddObject(plLocation(), draw);
@@ -100,6 +103,10 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
       min_z = verts[i].fPos.Z;
   }
   hsBounds3Ext bounds;
+  bounds.setFlags(hsBounds3Ext::kAxisAligned);
+  span->setLocalBounds(bounds);
+  span->setWorldBounds(bounds);
+  span->setMaxWorldBounds(bounds);
   bounds.setMins(hsVector3(min_x, min_y, min_z));
   bounds.setMaxs(hsVector3(max_x, max_y, max_z));
   icicle.setLocalBounds(bounds);
@@ -110,11 +117,30 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   icicle.setVStartIdx(vertex_offset);
   icicle.setILength(indices.getSize());
   icicle.setVLength(verts.getSize());
+  icicle.setMinDist(-1.0f);
+  icicle.setMaxDist(-1.0f);
   size_t id = span->addIcicle(icicle);
   plDISpanIndex di_index;
   di_index.fIndices.append(id);
   span->addDIIndex(di_index);
   draw->addDrawable(span->getKey(), id);
+  
+  hsGMaterial *mat = new hsGMaterial;
+  mat->init(toPlasma(name()));
+  manager->AddObject(span->getKey()->getLocation(), mat);
+  plLayer *layer = new plLayer;
+  layer->init(toPlasma(name()));
+  manager->AddObject(span->getKey()->getLocation(), layer);
+  layer->setAmbient(hsColorRGBA());
+  layer->setPreshade(hsColorRGBA(1.0f, 1.0f, 1.0f));
+  layer->setRuntime(hsColorRGBA(1.0f, 1.0f, 1.0f));
+  layer->setSpecular(hsColorRGBA(1.0f, 1.0f, 1.0f));
+  layer->getState().fShadeFlags = hsGMatState::kShadeSpecular | hsGMatState::kShadeSpecularAlpha | hsGMatState::kShadeSpecularColor
+                                | hsGMatState::kShadeSpecularHighlight;
+  layer->setLODBias(-1);
+  mat->addLayer(layer->getKey());
+  mat->setCompFlags(hsGMaterial::kCompSpecular);
+  span->addMaterial(mat->getKey());
 }
 
 bool ACDrawable::loadFromFile(const QString &filename)
@@ -132,6 +158,7 @@ bool ACDrawable::loadFromFile(const QString &filename)
       v.fPos.X = line.split(' ')[1].toFloat();
       v.fPos.Y = line.split(' ')[2].toFloat();
       v.fPos.Z = line.split(' ')[3].toFloat();
+      v.fColor = 0xFFFFFFFF;
       verts.append(v);
     } else if(line.startsWith('f')) {
       hsVector3 p0, p1, p2;
@@ -151,6 +178,7 @@ bool ACDrawable::loadFromFile(const QString &filename)
       indices.append(i2);
     }
   }
+  // Normalize all the normals;
   for(size_t i = 0; i < verts.getSize(); i++) {
     verts[i].fNormal = verts[i].fNormal * (1.0 / verts[i].fNormal.magnitude());
   }
