@@ -61,15 +61,11 @@ public:
   virtual ~ACDrawable();
   
   void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt);
+  bool loadFromFile(const QString &filename);
   
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
-
-//   Not yet implemented. Will support multi-material meshes and other cool stuff in an advanced
-//   format, whenever it gets implemented
-//   TODO: implement loadFromFile
-//   static ACDrawable *loadFromFile(const QString &filename);
 
 protected:
   plDrawInterface *draw;
