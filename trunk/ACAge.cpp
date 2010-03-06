@@ -35,6 +35,7 @@
 #include <Stream/plEncryptedStream.h>
 
 #include <QDir>
+#include <QFileDialog>
 #include <QIcon>
 #include <QInputDialog>
 #include <QItemSelectionModel>
@@ -315,12 +316,24 @@ int ACAge::addObject(const QString &name, int object_type)
     return Exists;
   ACObject *new_object;
   switch(object_type) {
-    case idSpawnPoint:
+    case idSpawnPoint: {
       new_object = new ACSpawnPoint(name);
       break;
-    case idDrawable:
+    }
+    case idDrawable: {
       new_object = new ACDrawable(name);
+      QString model_file = QFileDialog::getOpenFileName(NULL, tr("Import Age"), QString(), tr("Model Files (*.obj)"));
+      if(model_file.isEmpty()) {
+	// this tells the generic addObject() function to return
+	return Created;
+      } else {
+	if(!(qobject_cast<ACDrawable*>(new_object)->loadFromFile(model_file))) {
+	  QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
+	  return Created;
+	}
+      }
       break;
+    }
     default:
       break;
   }

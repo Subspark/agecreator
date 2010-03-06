@@ -29,6 +29,7 @@
 
 #include <climits>
 
+#include <QFile>
 #include <QDebug>
 
 QMap<plLocation, QWeakPointer<ACDrawableSpans> > ACDrawable::weak_spans;
@@ -66,14 +67,16 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
 
   // insert the new data
   size_t group = spans->getGroupId(span, format);
-  size_t vertex_offset = span->getCells(group, 0)[0].fLength;
+  size_t vertex_offset = 0;
+  for(size_t i = 0; i < span->getBuffer(group)->getNumVertBuffers(); i++)
+    vertex_offset += span->getBuffer(group)->getVertBufferSize(i);
   size_t index_offset = 0;
   for(size_t i = 0; i < span->getBuffer(group)->getNumIdxBuffers(); i++)
     index_offset += span->getBuffer(group)->getIdxBufferCount(i);
   span->addVerts(group, verts);
   span->addIndices(group, indices);
   plGBufferCell cell;
-  cell.fVtxStart = vertex_offset;
+  cell.fVtxStart = 0;
   cell.fColorStart=UINT_MAX;
   cell.fLength = vertex_offset + verts.getSize();
   hsTArray<plGBufferCell> cells;
@@ -112,6 +115,35 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   di_index.fIndices.append(id);
   span->addDIIndex(di_index);
   draw->addDrawable(span->getKey(), id);
+}
+
+bool ACDrawable::loadFromFile(const QString &filename)
+{
+  QFile model_file(filename);
+  if(!model_file.open(QIODevice::ReadOnly | QIODevice::Text))
+    return false;
+  hsTArray<plGBufferVertex> verts;
+  hsTArray<unsigned short> indices;
+  while(!model_file.atEnd()) {
+    QByteArray line = model_file.readLine();
+    line = line.simplified();
+    if(line.startsWith('v')) {
+      plGBufferVertex v;
+      v.fPos.X = line.split(' ')[1].toFloat();
+      v.fPos.Y = line.split(' ')[2].toFloat();
+      v.fPos.Z = line.split(' ')[3].toFloat();
+      v.fNormal.X = 0.0f;
+      v.fNormal.Y = 0.0f;
+      v.fNormal.Z = 1.0f;
+      verts.append(v);
+    } else if(line.startsWith('f')) {
+     indices.append(line.split(' ')[1].toShort());
+     indices.append(line.split(' ')[2].toShort());
+     indices.append(line.split(' ')[3].toShort());
+    }
+  }
+  setMeshData(verts, indices, (unsigned char)plGBufferGroup::kEncoded);
+  return true;
 }
 
 QIcon ACDrawable::icon() const
@@ -247,8 +279,9 @@ void ACDrawableSpans::meshRemoved(int id, unsigned char format)
 
 plString ACDrawableSpans::span_name(unsigned int render_level, unsigned int criteria)
 {
-  QString name = ascii("%1_%2Spans");
-  name.arg(render_level, 8, 16).arg(criteria, 1, 16);
+  QString rlevel = ascii("%1").arg(render_level, 8, 16, QLatin1Char('0'));
+  QString cteria = ascii("%1").arg(criteria, 1, 16);
+  QString name = rlevel + ascii("_") + cteria + ascii("Spans");
   if(scene_node.Exists()) {
     name = toQt(scene_node->getName()) + ascii("_") + name;
   }
