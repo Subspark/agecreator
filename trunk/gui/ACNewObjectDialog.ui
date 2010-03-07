@@ -42,6 +42,11 @@
      </item>
      <item>
       <property name="text">
+       <string>World Object</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>World Object (No Physics)</string>
       </property>
      </item>
