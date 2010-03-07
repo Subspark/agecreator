@@ -234,6 +234,16 @@ bool ACAge::isDirty() const
   return dirty_page;
 }
 
+int ACAge::layerCount() const
+{
+  return layers.size();
+}
+
+ACLayer *ACAge::getLayer(int i) const
+{
+  return layers[i];
+}
+
 // Setters
 void ACAge::setPlasmaVersion(PlasmaVer ver)
 {

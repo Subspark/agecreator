@@ -33,20 +33,21 @@
 #include <climits>
 
 #include <QFile>
-#include <QDebug>
+
+#include <GL/gl.h>
 
 QMap<plLocation, QWeakPointer<ACDrawableSpans> > ACDrawable::weak_spans;
 
 ACDrawable::ACDrawable(const QString &name)
   : ACObject(name)
 {
-  draw = new plDrawInterface;
-  draw->init(toPlasma(name));
-  draw->setOwner(scene_object->getKey());
+  drawi = new plDrawInterface;
+  drawi->init(toPlasma(name));
+  drawi->setOwner(scene_object->getKey());
   spans = getSpans(plLocation());
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
-  manager->AddObject(plLocation(), draw);
-  scene_object->setDrawInterface(draw->getKey());
+  manager->AddObject(plLocation(), drawi);
+  scene_object->setDrawInterface(drawi->getKey());
 }
 
 ACDrawable::ACDrawable(plKey key)
@@ -54,13 +55,13 @@ ACDrawable::ACDrawable(plKey key)
 {
   spans = getSpans(key->getLocation());
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
-  draw = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
+  drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
 }
 
 ACDrawable::ACDrawable::~ACDrawable()
 {
   clearMeshData();
-  manager->DelObject(draw->getKey());
+  manager->DelObject(drawi->getKey());
 }
 
 void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt)
@@ -124,7 +125,7 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   plDISpanIndex di_index;
   di_index.fIndices.append(id);
   span->addDIIndex(di_index);
-  draw->addDrawable(span->getKey(), id);
+  drawi->addDrawable(span->getKey(), id);
   
   hsGMaterial *mat = new hsGMaterial;
   mat->init(toPlasma(name()));
@@ -189,6 +190,22 @@ bool ACDrawable::loadFromFile(const QString &filename)
   return true;
 }
 
+void ACDrawable::draw() const
+{
+  if(drawi->getNumDrawables() == 0)
+    return;
+  size_t draw_key = drawi->getDrawableKey(0);
+  plIcicle* icicle = static_cast<plIcicle*>(spans->getSpan(0, 0)->getSpan(draw_key));
+  hsTArray<plGBufferVertex> verts = spans->getSpan(0, 0)->getVerts(icicle);
+  hsTArray<unsigned short> indices = spans->getSpan(0, 0)->getIndices(icicle);
+  glBegin(GL_TRIANGLES);
+  for(size_t i = 0; i < indices.getSize(); i++) {
+    glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
+    glNormal3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fNormal)));
+  }
+  glEnd();
+}
+
 QIcon ACDrawable::icon() const
 {
   return ACIcon("draw-triangle");
@@ -196,7 +213,7 @@ QIcon ACDrawable::icon() const
 
 void ACDrawable::registerWithPage(ACPage* page)
 {
-  manager->MoveKey(draw->getKey(), page->location());
+  manager->MoveKey(drawi->getKey(), page->location());
   disconnect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   moveMeshData(page->location()); // This updates spans as a side effect
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
@@ -205,7 +222,7 @@ void ACDrawable::registerWithPage(ACPage* page)
 
 void ACDrawable::unregisterFromPage(ACPage* page)
 {
-  manager->MoveKey(draw->getKey(), plLocation());
+  manager->MoveKey(drawi->getKey(), plLocation());
   disconnect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   moveMeshData(plLocation()); // This updates spans as a side effect
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
@@ -214,10 +231,10 @@ void ACDrawable::unregisterFromPage(ACPage* page)
 
 void ACDrawable::clearMeshData()
 {
-  if(draw->getNumDrawables()) {
+  if(drawi->getNumDrawables()) {
     //TODO: backup all mesh data for the current format, and re-insert all data but the one for this mesh
-    spans->meshRemoved(draw->getDrawableKey(0), format);
-    draw->delDrawable(0);
+    spans->meshRemoved(drawi->getDrawableKey(0), format);
+    drawi->delDrawable(0);
   }
   return;
 }
@@ -225,13 +242,13 @@ void ACDrawable::clearMeshData()
 void ACDrawable::moveMeshData(plLocation loc)
 {
   // If there's not actually any mesh data here, return
-  if(0 == draw->getNumDrawables()) {
+  if(0 == drawi->getNumDrawables()) {
     spans = getSpans(loc);
     return;
   }
   plDrawableSpans *span = spans->getSpan(0, 0);
-  hsTArray<plGBufferVertex> verts = span->getVerts(static_cast<plIcicle*>(span->getSpan(draw->getDrawableKey(0))));
-  hsTArray<unsigned short> indices = span->getIndices(static_cast<plIcicle*>(span->getSpan(draw->getDrawableKey(0))));
+  hsTArray<plGBufferVertex> verts = span->getVerts(static_cast<plIcicle*>(span->getSpan(drawi->getDrawableKey(0))));
+  hsTArray<unsigned short> indices = span->getIndices(static_cast<plIcicle*>(span->getSpan(drawi->getDrawableKey(0))));
   clearMeshData();
   spans = getSpans(loc);
   setMeshData(verts, indices, format);
@@ -250,11 +267,11 @@ QSharedPointer<ACDrawableSpans> ACDrawable::getSpans(plLocation loc)
 
 void ACDrawable::idUpdated(int id, unsigned char fmt)
 {
-  if(format == fmt && draw->getNumDrawables() && id < draw->getDrawableKey(0)) {
-    plKey key = draw->getDrawable(0);
-    int key_id = draw->getDrawableKey(0) - 1;
-    draw->delDrawable(0);
-    draw->addDrawable(key, key_id);
+  if(format == fmt && drawi->getNumDrawables() && id < drawi->getDrawableKey(0)) {
+    plKey key = drawi->getDrawable(0);
+    int key_id = drawi->getDrawableKey(0) - 1;
+    drawi->delDrawable(0);
+    drawi->addDrawable(key, key_id);
   }
 }
 
@@ -274,7 +291,7 @@ void ACDrawableSpans::load(plLocation loc)
 {
   scene_node = manager->getSceneNode(loc)->getKey();
   std::vector<plKey> keys = manager->getKeys(loc, kDrawableSpans);
-  // If this is being created on a page with no previous drawable spans, none of the below will run
+  // If this is being created on a page with no previous drawiable spans, none of the below will run
   // HOWEVER, this function still sets the scene node, so it must be called before using the class
   for(unsigned int i = 0; i < keys.size(); i++) {
     plDrawableSpans *span = static_cast<plDrawableSpans*>(keys[i]->getObj());
@@ -283,7 +300,6 @@ void ACDrawableSpans::load(plLocation loc)
     for(size_t j = 0; j < span->getNumBufferGroups(); j++) {
       QPair<plDrawableSpans*, unsigned char> pair(span, span->getBuffer(j)->getFormat());
       group_ids.insert(pair, j);
-      qDebug() << span->getBuffer(j)->getNumVertBuffers();
     }
   }
 }

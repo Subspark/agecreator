@@ -23,11 +23,15 @@
 #include <QGLWidget>
 #include <QMatrix4x4>
 
+class ACAge;
+
 class ACGLWidget : public QGLWidget
 {
   Q_OBJECT
 public:
   ACGLWidget(QWidget *parent);
+  
+  void setAge(ACAge *age);
 
 protected:
   void initializeGL();
@@ -44,6 +48,7 @@ private:
   
   QPoint last_pos;
   QMatrix4x4 camera_matrix;
+  ACAge *current_age;
 };
 
 #endif // ACGLWIDGET_H
