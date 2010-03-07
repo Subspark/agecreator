@@ -6,6 +6,7 @@ find_package(Qt4)
 set(PLASMA_DIR "./plasma" CACHE PATH "Location of Plasma library sources")
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII)
+set(QT_USE_QTOPENGL 1)
 
 if(NOT HSPlasma_FOUND)
   file(RELATIVE_PATH PLASMA_RELATIVE_DIR ${AGECREATOR_SOURCE_DIR} ${PLASMA_DIR})
@@ -25,6 +26,7 @@ set(AC_SRCS
     ACUtil.cpp
     gui/ACAgeWizard.cpp
     gui/ACExportDialog.cpp
+    gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
     gui/ACNewLayerDialog.cpp
     gui/ACNewObjectDialog.cpp
@@ -41,6 +43,7 @@ set(AC_HDRS
     ACUtil.h
     gui/ACAgeWizard.h
     gui/ACExportDialog.h
+    gui/ACGLWidget.h
     gui/ACMainWindow.h
     gui/ACNewLayerDialog.h
     gui/ACNewObjectDialog.h
