@@ -21,6 +21,7 @@
 #include "ACAge.h"
 #include "ACAgeWizard.h"
 #include "ACExportDialog.h"
+#include "ACGLWidget.h"
 #include "ACUtil.h"
 
 #include <QFileDialog>
@@ -111,8 +112,11 @@ void ACMainWindow::setupAgeGui()
   connect(ui.buttonAddObject, SIGNAL(clicked()), current_age, SLOT(addObject()));
   connect(ui.buttonDelObject, SIGNAL(clicked()), current_age, SLOT(delObject()));
   connect(ui.buttonAddLayer, SIGNAL(clicked()), current_age, SLOT(addLayer()));
+  connect(current_age, SIGNAL(rowsInserted()), ui.preview3d, SLOT(updateGL()));
+  connect(current_age, SIGNAL(rowsRemoved()), ui.preview3d, SLOT(updateGL()));
   ui.sceneTreeView->setModel(current_age);
   current_age->setSelectionModel(ui.sceneTreeView->selectionModel());
+  ui.preview3d->setAge(current_age);
   setWindowTitle(tr("Age Creator - %1").arg(current_age->name()));
 }
 
@@ -124,4 +128,5 @@ void ACMainWindow::teardownAgeGui()
   ui.buttonAddObject->setEnabled(false);
   ui.buttonDelObject->setEnabled(false);
   ui.buttonAddLayer->setEnabled(false);
+  ui.preview3d->setAge(0);
 }

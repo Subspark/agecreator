@@ -41,6 +41,7 @@ public:
   ACPage *page() const;
   QString name() const;
 
+  virtual void draw() const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);

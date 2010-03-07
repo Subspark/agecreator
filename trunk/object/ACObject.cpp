@@ -55,6 +55,9 @@ QString ACObject::name() const
   return toQt(scene_object->getKey()->getName());
 }
 
+void ACObject::draw() const
+{}
+
 QIcon ACObject::icon() const
 {
   // TODO: replace this with a better "generic object" icon

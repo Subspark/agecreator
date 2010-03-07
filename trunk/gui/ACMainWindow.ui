@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="ACGLWidget" name="widget" native="true"/>
+     <widget class="ACGLWidget" name="preview3d" native="true"/>
     </item>
    </layout>
   </widget>

@@ -63,6 +63,7 @@ public:
   void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt);
   bool loadFromFile(const QString &filename);
   
+  virtual void draw() const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
@@ -71,7 +72,7 @@ signals:
   void meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*);
 
 protected:
-  plDrawInterface *draw;
+  plDrawInterface *drawi;
   unsigned char format;
   QSharedPointer<ACDrawableSpans> spans;
   

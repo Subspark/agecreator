@@ -18,6 +18,9 @@
 */
 
 #include "ACGLWidget.h"
+#include "ACAge.h"
+#include "ACLayer.h"
+#include "ACObject.h"
 
 #include <QMouseEvent>
 
@@ -25,11 +28,17 @@
 
 ACGLWidget::ACGLWidget(QWidget *parent)
   : QGLWidget(parent),
-    cam_x(0.0f), cam_y(0.0f), cam_z(-6.0f),
-    cam_h(0.0f), cam_v(0.0f)
+    cam_x(0.0f), cam_y(0.0f), cam_z(-6.0f), // Start off at head height
+    cam_h(0.0f), cam_v(0.0f),
+    current_age(0)
 {
   setFocusPolicy(Qt::ClickFocus);
   camera_matrix.setToIdentity();
+}
+
+void ACGLWidget::setAge(ACAge *age)
+{
+  current_age = age;
 }
 
 void ACGLWidget::initializeGL()
@@ -47,12 +56,15 @@ void ACGLWidget::resizeGL(int w, int h)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   //TODO make this match the URU perspective matrix
-  gluPerspective(60.0, double(w)/double(h), 5.0, 500.0);
+  gluPerspective(60.0, double(w)/double(h), 0.1f, 500.0);
   glMatrixMode(GL_MODELVIEW);
 }
 
 void ACGLWidget::paintGL()
 {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  if(!current_age)
+    return;
   glLoadIdentity();
   // setup base coordinate system
   //TODO: figure out Uru's coordinate system
@@ -66,8 +78,9 @@ void ACGLWidget::paintGL()
   // Position the camera
   glTranslatef(cam_x, cam_y, cam_z);
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //TODO: call draw function for all world objects
+  for(int i = 0; i < current_age->layerCount(); i++)
+    for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
+      current_age->getLayer(i)->getObject(j)->draw();
 }
 
 void ACGLWidget::keyPressEvent(QKeyEvent *event)
