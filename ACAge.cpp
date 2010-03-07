@@ -25,7 +25,7 @@
 
 #include "ACObject.h"
 #include "ACSpawnPoint.h"
-#include "ACDrawable.h"
+#include "ACPhysicalDrawable.h"
 
 #include <ResManager/plResManager.h>
 #include <ResManager/plAgeInfo.h>
@@ -47,6 +47,7 @@
 // This must be kept in sync with the combo box in ACNewObjectDialog.ui
 enum objects {
   idSpawnPoint,
+  idPhysDrawable,
   idDrawable
 };
 
@@ -320,17 +321,27 @@ int ACAge::addObject(const QString &name, int object_type)
       new_object = new ACSpawnPoint(name);
       break;
     }
+    case idPhysDrawable: {
+      new_object = new ACPhysicalDrawable(name);
+      QString model_file = QFileDialog::getOpenFileName(NULL, tr("Import Age"), QString(), tr("Model Files (*.obj)"));
+      if(model_file.isEmpty()) {
+        // this tells the generic addObject() function to return
+        return Created;
+      } else if(!(qobject_cast<ACPhysicalDrawable*>(new_object)->loadFromFile(model_file))) {
+        QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
+        return Created;
+      }
+      break;
+    }
     case idDrawable: {
       new_object = new ACDrawable(name);
       QString model_file = QFileDialog::getOpenFileName(NULL, tr("Import Age"), QString(), tr("Model Files (*.obj)"));
       if(model_file.isEmpty()) {
-	// this tells the generic addObject() function to return
-	return Created;
-      } else {
-	if(!(qobject_cast<ACDrawable*>(new_object)->loadFromFile(model_file))) {
-	  QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
-	  return Created;
-	}
+        // this tells the generic addObject() function to return
+        return Created;
+      } else if(!(qobject_cast<ACDrawable*>(new_object)->loadFromFile(model_file))) {
+        QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
+        return Created;
       }
       break;
     }

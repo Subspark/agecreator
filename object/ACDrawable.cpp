@@ -25,9 +25,10 @@
 #include <PRP/Geometry/plGBufferGroup.h>
 #include <PRP/Object/plDrawInterface.h>
 #include <PRP/Object/plSceneObject.h>
+#include <PRP/plSceneNode.h>
+
 #include <PRP/Surface/hsGMaterial.h>
 #include <PRP/Surface/plLayer.h>
-#include <PRP/plSceneNode.h>
 
 #include <climits>
 
@@ -141,6 +142,8 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   mat->addLayer(layer->getKey());
   mat->setCompFlags(hsGMaterial::kCompSpecular);
   span->addMaterial(mat->getKey());
+  
+  emit meshDataUpdated(verts.getSize(), &(verts[0]), indices.getSize(), &(indices[0]));
 }
 
 bool ACDrawable::loadFromFile(const QString &filename)
@@ -197,7 +200,6 @@ void ACDrawable::registerWithPage(ACPage* page)
   disconnect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   moveMeshData(page->location()); // This updates spans as a side effect
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
-  spans->getSpan(0, 0);
   ACObject::registerWithPage(page);
 }
 

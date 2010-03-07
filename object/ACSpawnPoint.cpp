@@ -18,8 +18,7 @@
 */
 
 #include "ACSpawnPoint.h"
-#include "ACAge.h"
-#include "ACLayer.h"
+#include "ACPage.h"
 #include "ACUtil.h"
 
 #include <PRP/Modifier/plSpawnModifier.h>

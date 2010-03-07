@@ -67,6 +67,9 @@ public:
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
 
+signals:
+  void meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*);
+
 protected:
   plDrawInterface *draw;
   unsigned char format;

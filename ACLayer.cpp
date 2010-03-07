@@ -19,8 +19,7 @@
 
 #include "ACLayer.h"
 #include "ACAge.h"
-#include "ACDrawable.h"
-#include "ACObject.h"
+#include "ACPhysicalDrawable.h"
 #include "ACSpawnPoint.h"
 #include "ACUtil.h"
 
@@ -93,7 +92,9 @@ ACObject *ACLayer::createPlasmaObject(plKey key)
     if(obj->getModifier(0)->getType() == kSpawnModifier)
       return new ACSpawnPoint(key);
   }
-  if(obj->getDrawInterface().Exists() && !obj->getSimInterface().Exists()) {
+  if(obj->getDrawInterface().Exists() && obj->getSimInterface().Exists()) {
+    return new ACPhysicalDrawable(key);
+  } else if(obj->getDrawInterface().Exists()) {
     return new ACDrawable(key);
   }
   return new ACObject(key);

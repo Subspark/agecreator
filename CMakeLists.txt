@@ -30,6 +30,7 @@ set(AC_SRCS
     gui/ACNewObjectDialog.cpp
     object/ACDrawable.cpp
     object/ACObject.cpp
+    object/ACPhysicalDrawable.cpp
     object/ACSpawnPoint.cpp
 )
 
@@ -45,6 +46,7 @@ set(AC_HDRS
     gui/ACNewObjectDialog.h
     object/ACDrawable.h
     object/ACObject.h
+    object/ACPhysicalDrawable.h
     object/ACSpawnPoint.h
 )
 
