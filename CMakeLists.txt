@@ -70,5 +70,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                 ${CMAKE_CURRENT_SOURCE_DIR}/gui
 )
 
-add_executable(AgeCreator ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS} ${AC_QRC_SRCS})
+add_executable(AgeCreator WIN32 ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS} ${AC_QRC_SRCS})
 target_link_libraries(AgeCreator HSPlasma ${QT_LIBRARIES})
+install(TARGETS AgeCreator
+        DESTINATION bin
+)
