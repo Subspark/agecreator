@@ -33,6 +33,7 @@ ACGLWidget::ACGLWidget(QWidget *parent)
     current_age(0)
 {
   setFocusPolicy(Qt::ClickFocus);
+  setMinimumSize(200, 150);
   camera_matrix.setToIdentity();
 }
 
