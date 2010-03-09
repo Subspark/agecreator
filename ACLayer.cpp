@@ -18,6 +18,7 @@
 */
 
 #include "ACLayer.h"
+#include "ACLayerPropertiesDialog.h"
 #include "ACAge.h"
 #include "ACPhysicalDrawable.h"
 #include "ACSpawnPoint.h"
@@ -27,6 +28,8 @@
 #include <PRP/plPageInfo.h>
 #include <PRP/plSceneNode.h>
 #include <ResManager/plResManager.h>
+
+#include <QPointer>
 
 ACLayer::ACLayer(const QString &name, int page, ACAge *age)
   : ACPage(name, page, age)
@@ -81,6 +84,12 @@ void ACLayer::addObject(ACObject *obj)
 {
   objects.append(obj);
   obj->registerWithPage(this);
+}
+
+void ACLayer::propertiesDialog()
+{
+  QPointer<ACLayerPropertiesDialog> dialog = new ACLayerPropertiesDialog(this);
+  dialog->exec();
 }
 
 // This function could get much more complicated over time.
