@@ -24,6 +24,7 @@ set(AC_SRCS
     ACLayer.cpp
     ACPage.cpp
     ACUtil.cpp
+    gui/ACAgeTreeView.cpp
     gui/ACAgeWizard.cpp
     gui/ACExportDialog.cpp
     gui/ACGLWidget.cpp
@@ -41,6 +42,7 @@ set(AC_HDRS
     ACLayer.h
     ACPage.h
     ACUtil.h
+    gui/ACAgeTreeView.h
     gui/ACAgeWizard.h
     gui/ACExportDialog.h
     gui/ACGLWidget.h
