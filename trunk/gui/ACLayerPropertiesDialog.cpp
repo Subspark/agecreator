@@ -17,39 +17,24 @@
 
 */
 
-#ifndef ACPAGE_H
-#define ACPAGE_H
+#include "ACLayerPropertiesDialog.h"
+#include "ACLayer.h"
+#include "ACUtil.h"
 
-#include <QObject>
+#include <QRegExpValidator>
 
-#include <PRP/KeyedObject/plKey.h>
-
-class ACAge;
-class plLocation;
-class plPageInfo;
-
-class ACPage : public QObject
+ACLayerPropertiesDialog::ACLayerPropertiesDialog(ACLayer *lyr)
+  : layer(lyr)
 {
-  Q_OBJECT
-  Q_PROPERTY(QString name READ name WRITE setName)
-  Q_PROPERTY(bool dirty READ isDirty)
-public:
-  ACPage(const QString &name, int page, ACAge *age=0);
-  ACPage(const plLocation &loc, ACAge *age=0);
+  ui.setupUi(this);
+  QRegExp exp(ascii("[a-zA-Z0-9]+"));
+  QRegExpValidator *validator = new QRegExpValidator(exp, this);
+  ui.name->setValidator(validator);
+  ui.name->setText(layer->name());
+}
 
-  int suffix() const;
-  ACAge *age() const;
-  plPageInfo *page() const;
-  const plLocation &location() const;
-  bool isDirty() const;
-  void makeDirty();
-
-  QString name() const;
-  void setName(const QString &name);
-
-private:
-  plPageInfo *info;
-  bool dirty;
-};
-
-#endif // ACPAGE_H
+void ACLayerPropertiesDialog::accept()
+{
+  layer->setName(ui.name->text());
+  QDialog::accept();
+}

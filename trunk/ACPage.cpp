@@ -52,11 +52,6 @@ int ACPage::suffix() const
   return info->getLocation().getPageNum();
 }
 
-QString ACPage::name() const
-{
-  return QString(toQt(info->getPage()));
-}
-
 ACAge *ACPage::age() const
 {
   return qobject_cast<ACAge*>(parent());
@@ -80,4 +75,14 @@ bool ACPage::isDirty() const
 void ACPage::makeDirty()
 {
   dirty = true;
+}
+
+QString ACPage::name() const
+{
+  return QString(toQt(info->getPage()));
+}
+
+void ACPage::setName(const QString &name)
+{
+  info->setPage(toPlasma(name));
 }

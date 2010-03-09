@@ -17,39 +17,27 @@
 
 */
 
-#ifndef ACPAGE_H
-#define ACPAGE_H
+#ifndef ACLAYERPROPERTIESDIALOG_H
+#define ACLAYERPROPERTIESDIALOG_H
 
-#include <QObject>
+#include <QDialog>
 
-#include <PRP/KeyedObject/plKey.h>
+#include "ui_ACLayerPropertiesDialog.h"
 
-class ACAge;
-class plLocation;
-class plPageInfo;
+class ACLayer;
 
-class ACPage : public QObject
+class ACLayerPropertiesDialog : public QDialog
 {
   Q_OBJECT
-  Q_PROPERTY(QString name READ name WRITE setName)
-  Q_PROPERTY(bool dirty READ isDirty)
 public:
-  ACPage(const QString &name, int page, ACAge *age=0);
-  ACPage(const plLocation &loc, ACAge *age=0);
+  ACLayerPropertiesDialog(ACLayer *lyr);
 
-  int suffix() const;
-  ACAge *age() const;
-  plPageInfo *page() const;
-  const plLocation &location() const;
-  bool isDirty() const;
-  void makeDirty();
-
-  QString name() const;
-  void setName(const QString &name);
+public slots:
+  void accept();
 
 private:
-  plPageInfo *info;
-  bool dirty;
+  ACLayer *layer;
+  Ui_ACLayerPropertiesDialog ui;
 };
 
-#endif // ACPAGE_H
+#endif // ACLAYERPROPERTIESDIALOG_H

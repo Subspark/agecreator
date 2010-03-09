@@ -38,6 +38,9 @@ public:
   ACObject *getObject(int) const;
   void addObject(ACObject *obj);
 
+public slots:
+  void propertiesDialog();
+
 private:
   plSceneNode *node;
   QList<ACObject*> objects;
