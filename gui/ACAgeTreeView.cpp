@@ -18,6 +18,9 @@
 */
 
 #include "ACAgeTreeView.h"
+#include "ACUtil.h"
+
+#include <QAction>
 
 ACAgeTreeView::ACAgeTreeView(QWidget *parent)
   : QTreeView(parent)
@@ -28,7 +31,9 @@ ACAgeTreeView::ACAgeTreeView(QWidget *parent)
   setSelectionMode(ExtendedSelection);
   setHeaderHidden(true);
   setContextMenuPolicy(Qt::ActionsContextMenu);
-  //TODO: Add actions
+  QAction *action;
+  action = new QAction(ACIcon("configure"), tr("Properties"), this);
+  addAction(action);
 }
 
 void ACAgeTreeView::setModel(QAbstractItemModel *model)
@@ -42,5 +47,8 @@ void ACAgeTreeView::setModel(QAbstractItemModel *model)
 
 void ACAgeTreeView::updateActions(const QModelIndex &index)
 {
-  //TODO: connect actions to slots on the current object
+  foreach(QAction *a, actions()) {
+    a->disconnect();
+    connect(a, SIGNAL(triggered()), static_cast<QObject*>(index.internalPointer()), SLOT(propertiesDialog()));
+  }
 }
