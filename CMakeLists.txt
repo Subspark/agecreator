@@ -10,7 +10,8 @@ set(QT_USE_QTOPENGL 1)
 if(NOT HSPlasma_FOUND)
   add_library(HSPlasma SHARED IMPORTED)
   set_target_properties(HSPlasma PROPERTIES
-                        IMPORTED_LOCATION_DEBUG ${HSPLASMA_LIBRARY}
+                        IMPORTED_LOCATION ${HSPLASMA_LIBRARY}
+                        IMPORTED_IMPLIB ${HSPLASMA_IMPLIB}
   )
 
   include_directories(${HSPLASMA_INCLUDE})
