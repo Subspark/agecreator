@@ -26,7 +26,6 @@ set(AC_SRCS
     gui/ACAgeTreeView.cpp
     gui/ACAgeWizard.cpp
     gui/ACExportDialog.cpp
-    gui/ACLayerPropertiesDialog.cpp
     gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
     gui/ACNewLayerDialog.cpp
@@ -45,7 +44,6 @@ set(AC_HDRS
     gui/ACAgeTreeView.h
     gui/ACAgeWizard.h
     gui/ACExportDialog.h
-    gui/ACLayerPropertiesDialog.h
     gui/ACGLWidget.h
     gui/ACMainWindow.h
     gui/ACNewLayerDialog.h
@@ -58,7 +56,6 @@ set(AC_HDRS
 
 set(AC_UIS
     gui/ACExportDialog.ui
-    gui/ACLayerPropertiesDialog.ui
     gui/ACMainWindow.ui
     gui/ACNewLayerDialog.ui
     gui/ACNewObjectDialog.ui
