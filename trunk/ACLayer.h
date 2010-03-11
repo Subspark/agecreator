@@ -40,6 +40,7 @@ public:
 
 public slots:
   void propertiesDialog();
+  virtual void setName(const QString &name);
 
 private:
   plSceneNode *node;

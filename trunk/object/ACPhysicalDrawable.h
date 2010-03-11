@@ -42,6 +42,9 @@ public:
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
 
+public slots:
+  virtual void setName(const QString &name);
+
 protected:
   plGenericPhysical *phys;
   plSimulationInterface *sim;

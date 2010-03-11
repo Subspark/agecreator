@@ -92,6 +92,15 @@ void ACLayer::propertiesDialog()
   dialog->exec();
 }
 
+void ACLayer::setName(const QString &name)
+{
+  ACPage::setName(name);
+  if(manager->getVer() < pvEoa)
+    node->init(toPlasma(age()->name()+ascii("_District_")+name));
+  else
+    node->init(toPlasma(age()->name()+name));
+}
+
 // This function could get much more complicated over time.
 // Need to find a better way to do this
 ACObject *ACLayer::createPlasmaObject(plKey key)

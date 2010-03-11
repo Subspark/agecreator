@@ -85,4 +85,5 @@ QString ACPage::name() const
 void ACPage::setName(const QString &name)
 {
   info->setPage(toPlasma(name));
+  age()->updatePageName(location().getPageNum(), name);
 }

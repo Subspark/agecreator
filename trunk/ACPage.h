@@ -31,8 +31,9 @@ class plPageInfo;
 class ACPage : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(QString name READ name WRITE setName)
+  Q_PROPERTY(QString name READ name WRITE setName DESIGNABLE true USER true)
   Q_PROPERTY(bool dirty READ isDirty)
+  Q_CLASSINFO("ACPage", "Page")
 public:
   ACPage(const QString &name, int page, ACAge *age=0);
   ACPage(const plLocation &loc, ACAge *age=0);
@@ -45,7 +46,9 @@ public:
   void makeDirty();
 
   QString name() const;
-  void setName(const QString &name);
+
+public slots:
+  virtual void setName(const QString &name);
 
 private:
   plPageInfo *info;

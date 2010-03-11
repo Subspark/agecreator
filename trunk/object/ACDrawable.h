@@ -68,6 +68,9 @@ public:
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);
 
+public slots:
+  void setName(const QString &name);
+
 signals:
   void meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*);
 

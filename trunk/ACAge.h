@@ -49,6 +49,7 @@ public:
   int layerCount() const;
   ACLayer *getLayer(int) const;
   ACLayer *getLayer(const QString&) const;
+  void updatePageName(int id, const QString &new_name);
   
   void exportAge(const QString&);
 

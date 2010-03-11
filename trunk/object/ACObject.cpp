@@ -55,6 +55,11 @@ QString ACObject::name() const
   return toQt(scene_object->getKey()->getName());
 }
 
+void ACObject::setName(const QString &name)
+{
+  scene_object->getKey()->setName(toPlasma(name));
+}
+
 void ACObject::draw() const
 {}
 

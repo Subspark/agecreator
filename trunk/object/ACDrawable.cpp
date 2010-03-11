@@ -265,6 +265,12 @@ QSharedPointer<ACDrawableSpans> ACDrawable::getSpans(plLocation loc)
   return weak_spans.value(loc);
 }
 
+void ACDrawable::setName(const QString &name)
+{
+  ACObject::setName(name);
+  drawi->getKey()->setName(toPlasma(name));
+}
+
 void ACDrawable::idUpdated(int id, unsigned char fmt)
 {
   if(format == fmt && drawi->getNumDrawables() && id < drawi->getDrawableKey(0)) {
