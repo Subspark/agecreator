@@ -1,16 +1,19 @@
 project(AGECREATOR)
 cmake_minimum_required(VERSION 2.6)
 find_package(HSPlasma)
-find_package(Qt4)
+find_package(Qt4 REQUIRED)
 
 set(PLASMA_DIR "./plasma" CACHE PATH "Location of Plasma library sources")
 
 set(QT_USE_QTOPENGL 1)
 
 if(NOT HSPlasma_FOUND)
-  file(RELATIVE_PATH PLASMA_RELATIVE_DIR ${AGECREATOR_SOURCE_DIR} ${PLASMA_DIR})
-  add_subdirectory(${PLASMA_RELATIVE_DIR})
-  include_directories(${PLASMA_RELATIVE_DIR}/core)
+  add_library(HSPlasma SHARED IMPORTED)
+  set_target_properties(HSPlasma PROPERTIES
+                        IMPORTED_LOCATION_DEBUG ${HSPLASMA_LIBRARY}
+  )
+
+  include_directories(${HSPLASMA_INCLUDE})
 else(NOT HSPlasma_FOUND)
   include_directories(${Plasma_INCLUDE_DIRS})
 endif(NOT HSPlasma_FOUND)
