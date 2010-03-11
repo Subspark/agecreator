@@ -5,7 +5,6 @@ find_package(Qt4)
 
 set(PLASMA_DIR "./plasma" CACHE PATH "Location of Plasma library sources")
 
-add_definitions(-DQT_NO_CAST_FROM_ASCII)
 set(QT_USE_QTOPENGL 1)
 
 if(NOT HSPlasma_FOUND)
@@ -78,8 +77,14 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                 ${CMAKE_CURRENT_SOURCE_DIR}/gui
 )
 
+add_subdirectory(3rdparty/QPropertyEditor)
+include_directories(3rdparty/QPropertyEditor)
+
 add_executable(AgeCreator WIN32 ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS} ${AC_QRC_SRCS})
-target_link_libraries(AgeCreator HSPlasma ${QT_LIBRARIES})
+set_target_properties(AgeCreator PROPERTIES
+                      COMPILE_DEFINITIONS QT_NO_CAST_FROM_ASCII
+)
+target_link_libraries(AgeCreator HSPlasma QPropertyEditor ${QT_LIBRARIES})
 install(TARGETS AgeCreator
         DESTINATION bin
 )

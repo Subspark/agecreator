@@ -406,6 +406,19 @@ QStringList ACAge::getLayers() const
   return layers;
 }
 
+void ACAge::updatePageName(int id, const QString& new_name)
+{
+  hsTArray<plAgeInfo::PageEntry> temp_pages;
+  for(size_t i = 0; i < age->getNumPages(); i++) {
+    plAgeInfo::PageEntry pe = age->getPage(i);
+    if(pe.fSeqSuffix == id)
+      pe.fName = toPlasma(new_name);
+  }
+  age->clearPages();
+  for(size_t i = 0; i < temp_pages.getSize(); i++)
+    age->addPage(temp_pages[i]);
+}
+
 void ACAge::exportAge(const QString &path)
 {
   manager->WriteAge((path+QDir::separator()+name()+ascii(".age")).toLocal8Bit().data(), age);

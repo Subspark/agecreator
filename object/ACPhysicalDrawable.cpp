@@ -113,3 +113,10 @@ void ACPhysicalDrawable::updateCollider(size_t vs, const plGBufferVertex *v, siz
   setColliderIndices(phys_indices);
   setColliderVerts(phys_verts);
 }
+
+void ACPhysicalDrawable::setName(const QString& name)
+{
+  ACDrawable::setName(name);
+  sim->getKey()->setName(toPlasma(name));
+  phys->getKey()->setName(toPlasma(name));
+}

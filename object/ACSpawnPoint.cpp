@@ -71,3 +71,10 @@ void ACSpawnPoint::unregisterFromPage(ACPage *page)
   manager->MoveKey(coord->getKey(), plLocation());
   ACObject::unregisterFromPage(page);
 }
+
+void ACSpawnPoint::setName(const QString &name)
+{
+  ACObject::setName(name);
+  spawn->getKey()->setName(toPlasma(name));
+  coord->getKey()->setName(toPlasma(name));
+}

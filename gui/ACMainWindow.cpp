@@ -101,6 +101,11 @@ void ACMainWindow::exportAge()
   current_age->exportAge(dialog->exportPath());
 }
 
+void ACMainWindow::currentObjectChanged(const QModelIndex& current)
+{
+  ui.propEditor->setObject(static_cast<QObject*>(current.internalPointer()));
+}
+
 void ACMainWindow::setupAgeGui()
 {
   ui.actionFileClose->setEnabled(true);
@@ -115,6 +120,7 @@ void ACMainWindow::setupAgeGui()
   connect(current_age, SIGNAL(rowsInserted(const QModelIndex&, int, int)), ui.preview3d, SLOT(updateGL()));
   connect(current_age, SIGNAL(rowsRemoved(const QModelIndex&, int, int)), ui.preview3d, SLOT(updateGL()));
   ui.sceneTreeView->setModel(current_age);
+  connect(ui.sceneTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(currentObjectChanged(QModelIndex)));
   current_age->setSelectionModel(ui.sceneTreeView->selectionModel());
   ui.preview3d->setAge(current_age);
   setWindowTitle(tr("Age Creator - %1").arg(current_age->name()));

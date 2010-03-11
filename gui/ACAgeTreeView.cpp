@@ -30,10 +30,6 @@ ACAgeTreeView::ACAgeTreeView(QWidget *parent)
   setDefaultDropAction(Qt::MoveAction);
   setSelectionMode(ExtendedSelection);
   setHeaderHidden(true);
-  setContextMenuPolicy(Qt::ActionsContextMenu);
-  QAction *action;
-  action = new QAction(ACIcon("configure"), tr("Properties"), this);
-  addAction(action);
 }
 
 void ACAgeTreeView::setModel(QAbstractItemModel *model)
@@ -47,8 +43,5 @@ void ACAgeTreeView::setModel(QAbstractItemModel *model)
 
 void ACAgeTreeView::updateActions(const QModelIndex &index)
 {
-  foreach(QAction *a, actions()) {
-    a->disconnect();
-    connect(a, SIGNAL(triggered()), static_cast<QObject*>(index.internalPointer()), SLOT(propertiesDialog()));
-  }
+  //TODO: special actions for certain object types will be handled here.
 }

@@ -32,7 +32,9 @@ class ACPage;
 
 class ACObject : public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
+  Q_PROPERTY(QString name READ name WRITE setName DESIGNABLE true USER true)
+  Q_CLASSINFO("ACObject", "Object")
 public:
   ACObject(const QString& name);
   ACObject(plKey key);
@@ -45,6 +47,10 @@ public:
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);
+
+public slots:
+  virtual void setName(const QString &);
+
 protected:
   plSceneObject *scene_object;
 };
