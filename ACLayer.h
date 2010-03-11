@@ -39,7 +39,6 @@ public:
   void addObject(ACObject *obj);
 
 public slots:
-  void propertiesDialog();
   virtual void setName(const QString &name);
 
 private:

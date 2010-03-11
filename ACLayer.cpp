@@ -18,7 +18,6 @@
 */
 
 #include "ACLayer.h"
-#include "ACLayerPropertiesDialog.h"
 #include "ACAge.h"
 #include "ACPhysicalDrawable.h"
 #include "ACSpawnPoint.h"
@@ -84,12 +83,6 @@ void ACLayer::addObject(ACObject *obj)
 {
   objects.append(obj);
   obj->registerWithPage(this);
-}
-
-void ACLayer::propertiesDialog()
-{
-  QPointer<ACLayerPropertiesDialog> dialog = new ACLayerPropertiesDialog(this);
-  dialog->exec();
 }
 
 void ACLayer::setName(const QString &name)
