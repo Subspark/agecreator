@@ -26,6 +26,8 @@
 
 #include <cmath>
 
+#include <Math/hsGeometry3.h>
+
 ACGLWidget::ACGLWidget(QWidget *parent)
   : QGLWidget(parent),
     cam_x(0.0f), cam_y(0.0f), cam_z(-6.0f), // Start off at head height
@@ -34,7 +36,7 @@ ACGLWidget::ACGLWidget(QWidget *parent)
 {
   setFocusPolicy(Qt::ClickFocus);
   setMinimumSize(200, 150);
-  camera_matrix.setToIdentity();
+  camera_matrix = hsMatrix44::Identity();
 }
 
 void ACGLWidget::setAge(ACAge *age)
@@ -87,21 +89,21 @@ void ACGLWidget::paintGL()
 void ACGLWidget::keyPressEvent(QKeyEvent *event)
 {
   //TODO properly translate these based on the current angle
-  QVector3D vec;
+  hsVector3 vec;
   if(event->key() == Qt::Key_Up)
-    vec.setY(-2.0f);
+    vec.Y = -2.0f;
   else if(event->key() == Qt::Key_Down)
-    vec.setY(2.0f);
+    vec.Y = 2.0f;
   else if(event->key() == Qt::Key_Right)
-    vec.setX(-2.0f);
+    vec.X = -2.0f;
   else if(event->key() == Qt::Key_Left)
-    vec.setX(2.0f);
+    vec.X = 2.0f;
   QWidget::keyPressEvent(event);
-  QVector3D new_vec;
+  hsVector3 new_vec;
   new_vec = vec * camera_matrix;
-  cam_x += new_vec.x();
-  cam_y += new_vec.y();
-  cam_z += new_vec.z();
+  cam_x += new_vec.X;
+  cam_y += new_vec.Y;
+  cam_z += new_vec.Z;
   updateGL();
 }
 
@@ -123,7 +125,7 @@ void ACGLWidget::mouseMoveEvent(QMouseEvent *event)
   }
   event->accept();
   updateGL();
-  camera_matrix.setToIdentity();
-  camera_matrix.rotate(cam_v, 1.0f, 0.0f, 0.0f);
-  camera_matrix.rotate(cam_h, 0.0f, 0.0f, 1.0f);
+  camera_matrix = hsMatrix44::Identity();
+  camera_matrix.rotate(hsMatrix44::kRight, cam_v);
+  camera_matrix.rotate(hsMatrix44::kUp, cam_h);
 }

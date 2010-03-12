@@ -27,7 +27,6 @@ ACAgeTreeView::ACAgeTreeView(QWidget *parent)
 {
   setDragEnabled(true);
   setDragDropMode(InternalMove);
-  setDefaultDropAction(Qt::MoveAction);
   setSelectionMode(ExtendedSelection);
   setHeaderHidden(true);
 }
