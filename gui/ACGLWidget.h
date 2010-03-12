@@ -21,7 +21,8 @@
 #define ACGLWIDGET_H
 
 #include <QGLWidget>
-#include <QMatrix4x4>
+
+#include <Math/hsMatrix44.h>
 
 class ACAge;
 
@@ -47,7 +48,7 @@ private:
   float cam_h, cam_v; // rotation
   
   QPoint last_pos;
-  QMatrix4x4 camera_matrix;
+  hsMatrix44 camera_matrix;
   ACAge *current_age;
 };
 

@@ -24,7 +24,12 @@
 #include <QString>
 
 #define ascii(str) QString::fromAscii(str)
-#define ACIcon(str) QIcon::fromTheme(ascii(str))
+
+#if QT_VERSION >= 0x040600
+# define ACIcon(str) QIcon::fromTheme(ascii(str))
+#else
+# define ACIcon(str) QIcon()
+#endif
 
 class plResManager;
 extern plResManager *manager;
