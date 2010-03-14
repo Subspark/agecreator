@@ -21,6 +21,7 @@
 #define ACDRAWABLE_H
 
 #include "ACObject.h"
+#include "ACMaterial.h"
 
 #include <QMap>
 #include <QPair>

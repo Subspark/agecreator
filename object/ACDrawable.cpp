@@ -127,22 +127,9 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   span->addDIIndex(di_index);
   drawi->addDrawable(span->getKey(), id);
   
-  hsGMaterial *mat = new hsGMaterial;
-  mat->init(toPlasma(name()));
-  manager->AddObject(span->getKey()->getLocation(), mat);
-  plLayer *layer = new plLayer;
-  layer->init(toPlasma(name()));
-  manager->AddObject(span->getKey()->getLocation(), layer);
-  layer->setAmbient(hsColorRGBA());
-  layer->setPreshade(hsColorRGBA(1.0f, 1.0f, 1.0f));
-  layer->setRuntime(hsColorRGBA(1.0f, 1.0f, 1.0f));
-  layer->setSpecular(hsColorRGBA(1.0f, 1.0f, 1.0f));
-  layer->getState().fShadeFlags = hsGMatState::kShadeSpecular | hsGMatState::kShadeSpecularAlpha | hsGMatState::kShadeSpecularColor
-                                | hsGMatState::kShadeSpecularHighlight;
-  layer->setLODBias(-1);
-  mat->addLayer(layer->getKey());
-  mat->setCompFlags(hsGMaterial::kCompSpecular);
-  span->addMaterial(mat->getKey());
+  ACMaterial *mat = new ACMaterial(name());
+  mat->setLocation(span->getKey()->getLocation());
+  span->addMaterial(mat->key());
   
   emit meshDataUpdated(verts.getSize(), &(verts[0]), indices.getSize(), &(indices[0]));
 }
