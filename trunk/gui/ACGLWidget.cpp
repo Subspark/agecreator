@@ -88,7 +88,6 @@ void ACGLWidget::paintGL()
 
 void ACGLWidget::keyPressEvent(QKeyEvent *event)
 {
-  //TODO properly translate these based on the current angle
   hsVector3 vec;
   if(event->key() == Qt::Key_Up)
     vec.Y = -2.0f;
@@ -98,9 +97,14 @@ void ACGLWidget::keyPressEvent(QKeyEvent *event)
     vec.X = -2.0f;
   else if(event->key() == Qt::Key_Left)
     vec.X = 2.0f;
-  QWidget::keyPressEvent(event);
+  else if(event->key() == Qt::Key_PageUp)
+    vec.Z = -2.0f;
+  else if(event->key() == Qt::Key_PageDown)
+    vec.Z = 2.0f;
+  else
+    QWidget::keyPressEvent(event);
   hsVector3 new_vec;
-  new_vec = vec * camera_matrix;
+  new_vec = camera_matrix * vec;
   cam_x += new_vec.X;
   cam_y += new_vec.Y;
   cam_z += new_vec.Z;
@@ -119,13 +123,20 @@ void ACGLWidget::mouseMoveEvent(QMouseEvent *event)
   int dy = event->pos().y() - last_pos.y();
   last_pos = event->pos();
   
-  if(event->buttons() & Qt::LeftButton) {
+  if(event->buttons() & Qt::MidButton) {
     cam_h += float(dx);
     cam_v += float(dy);
   }
+  if(cam_h > 180.0f)
+    cam_h -= 360.0f;
+  else if(cam_h < -180.0f)
+    cam_h += 360.0f;
+  if(cam_v > 90.0f)
+    cam_v = 90.0f;
+  else if(cam_v < -90.0f)
+    cam_v = -90.0f;
   event->accept();
   updateGL();
   camera_matrix = hsMatrix44::Identity();
-  camera_matrix.rotate(hsMatrix44::kRight, cam_v);
-  camera_matrix.rotate(hsMatrix44::kUp, cam_h);
+  camera_matrix.rotate(hsMatrix44::kView, cam_h*3.14159/180.0f);
 }
