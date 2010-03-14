@@ -17,44 +17,30 @@
 
 */
 
-#ifndef ACOBJECT_H
-#define ACOBJECT_H
+#include "ACProperties.h"
+#include "ACObject.h"
+#include "ACUtil.h"
 
-#include <QObject>
-#include <QIcon>
-
+#include "ACObjectNameProperty.h"
 #include "ACObjectName.h"
+//#include "AChsVector3Property.h"
 
-#include "PRP/KeyedObject/plKey.h"
-
-class plSceneObject;
-class plPageInfo;
-
-class ACPage;
-
-class ACObject : public QObject
+void registerTypes()
 {
-  Q_OBJECT
-  Q_PROPERTY(ACObjectName name READ name WRITE setName DESIGNABLE true USER true)
-  Q_CLASSINFO("ACObject", "Object")
-public:
-  ACObject(const QString& name);
-  ACObject(plKey key);
-  virtual ~ACObject();
+  static bool registered = false;
+  if(!registered)
+  {
+    qRegisterMetaType<hsVector3>("hsVector3");
+    qRegisterMetaType<ACObjectName>("ACObjectName");
+    registered = true;
+  }
+}
 
-  ACPage *page() const;
-  QString name() const;
-
-  virtual void draw() const;
-  virtual QIcon icon() const;
-  virtual void registerWithPage(ACPage *page);
-  virtual void unregisterFromPage(ACPage *page);
-
-public slots:
-  virtual void setName(const QString &);
-
-protected:
-  plSceneObject *scene_object;
-};
-
-#endif // ACOBJECT_H
+Property *createCustomProperty(const QString &name, QObject *propertyObject, Property *parent)
+{
+  int type = propertyObject->property(qPrintable(name)).userType();
+  if(type == QMetaType::type("ACObjectName"))
+    return new ACObjectNameProperty(name, propertyObject, parent);
+  else
+    return new Property(name, propertyObject, parent);
+}

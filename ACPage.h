@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include "ACObjectName.h"
+
 #include <PRP/KeyedObject/plKey.h>
 
 class ACAge;
@@ -31,7 +33,7 @@ class plPageInfo;
 class ACPage : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(QString name READ name WRITE setName DESIGNABLE true USER true)
+  Q_PROPERTY(ACObjectName name READ name WRITE setName DESIGNABLE true USER true)
   Q_PROPERTY(bool dirty READ isDirty)
   Q_CLASSINFO("ACPage", "Page")
 public:

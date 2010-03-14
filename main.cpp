@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QIcon>
 #include "ACMainWindow.h"
+#include "ACProperties.h"
 #include "ACUtil.h"
 
 #include "ResManager/plResManager.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
     QtIconLoader::setIconTheme(ascii("oxygen"));
 #endif
   manager = new plResManager;
+  registerTypes();
   ACMainWindow win;
   win.show();
   return app.exec();

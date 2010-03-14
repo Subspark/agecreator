@@ -40,6 +40,9 @@ set(AC_SRCS
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
     object/ACSpawnPoint.cpp
+    properties/ACObjectName.cpp
+    properties/ACObjectNameProperty.cpp
+    properties/ACProperties.cpp
 )
 
 set(AC_HDRS
@@ -60,6 +63,9 @@ set(AC_HDRS
     object/ACObject.h
     object/ACPhysicalDrawable.h
     object/ACSpawnPoint.h
+    properties/ACObjectName.h
+    properties/ACObjectNameProperty.h
+    properties/ACProperties.h
 )
 
 set(AC_UIS
@@ -81,6 +87,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/gui
                     ${CMAKE_CURRENT_SOURCE_DIR}/material
                     ${CMAKE_CURRENT_SOURCE_DIR}/object
+                    ${CMAKE_CURRENT_SOURCE_DIR}/properties
 )
 
 add_subdirectory(3rdparty/QPropertyEditor)
