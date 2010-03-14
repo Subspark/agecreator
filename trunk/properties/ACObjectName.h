@@ -17,44 +17,26 @@
 
 */
 
-#ifndef ACOBJECT_H
-#define ACOBJECT_H
+#ifndef ACOBJECTNAME_H
+#define ACOBJECTNAME_H
 
 #include <QObject>
-#include <QIcon>
+#include <QString>
+#include <QMetaType>
 
-#include "ACObjectName.h"
-
-#include "PRP/KeyedObject/plKey.h"
-
-class plSceneObject;
-class plPageInfo;
-
-class ACPage;
-
-class ACObject : public QObject
+class ACObjectName : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(ACObjectName name READ name WRITE setName DESIGNABLE true USER true)
-  Q_CLASSINFO("ACObject", "Object")
 public:
-  ACObject(const QString& name);
-  ACObject(plKey key);
-  virtual ~ACObject();
-
-  ACPage *page() const;
-  QString name() const;
-
-  virtual void draw() const;
-  virtual QIcon icon() const;
-  virtual void registerWithPage(ACPage *page);
-  virtual void unregisterFromPage(ACPage *page);
-
-public slots:
-  virtual void setName(const QString &);
-
-protected:
-  plSceneObject *scene_object;
+  ACObjectName();
+  ACObjectName(const QString &str);
+  ACObjectName(const ACObjectName&);
+  ~ACObjectName();
+  ACObjectName operator=(const ACObjectName&);
+  operator QString();
+private:
+  QString name;
 };
+Q_DECLARE_METATYPE(ACObjectName)
 
-#endif // ACOBJECT_H
+#endif // ACOBJECTNAME_H

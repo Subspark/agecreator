@@ -22,6 +22,7 @@
 #include "ACAgeWizard.h"
 #include "ACExportDialog.h"
 #include "ACGLWidget.h"
+#include "ACProperties.h"
 #include "ACUtil.h"
 
 #include <QFileDialog>
@@ -48,6 +49,8 @@ ACMainWindow::ACMainWindow()
   ui.buttonAddObject->setIcon(ACIcon("list-add"));
   ui.buttonDelObject->setIcon(ACIcon("list-remove"));
   ui.buttonAddLayer->setIcon(ACIcon("folder-new"));
+
+  ui.propEditor->registerCustomPropertyCB(createCustomProperty);
   
   // This function sets things up for when there is no age loaded
   teardownAgeGui();
