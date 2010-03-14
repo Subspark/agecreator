@@ -195,9 +195,12 @@ void ACDrawable::draw() const
   if(drawi->getNumDrawables() == 0)
     return;
   size_t draw_key = drawi->getDrawableKey(0);
-  plIcicle* icicle = static_cast<plIcicle*>(spans->getSpan(0, 0)->getSpan(draw_key));
-  hsTArray<plGBufferVertex> verts = spans->getSpan(0, 0)->getVerts(icicle);
-  hsTArray<unsigned short> indices = spans->getSpan(0, 0)->getIndices(icicle);
+  plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
+  if(static_cast<plSpan*>(span->getSpan(draw_key))->getSubType() != plSpan::kIcicleSpan)
+    return;
+  plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(draw_key));
+  hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
+  hsTArray<unsigned short> indices = span->getIndices(icicle);
   glBegin(GL_TRIANGLES);
   for(size_t i = 0; i < indices.getSize(); i++) {
     glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
