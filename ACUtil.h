@@ -28,7 +28,8 @@
 #if QT_VERSION >= 0x040600
 # define ACIcon(str) QIcon::fromTheme(ascii(str))
 #else
-# define ACIcon(str) QIcon()
+# include "qticonloader.h"
+# define ACIcon(str) QtIconLoader::icon(ascii(str), QIcon())
 #endif
 
 class plResManager;

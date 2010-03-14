@@ -81,11 +81,21 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
 add_subdirectory(3rdparty/QPropertyEditor)
 include_directories(3rdparty/QPropertyEditor)
 
+if(QT_VERSION_MINOR LESS 6)
+  add_subdirectory(3rdparty/QtIconLoader)
+  include_directories(3rdparty/QtIconLoader)
+endif(QT_VERSION_MINOR LESS 6)
+
 add_executable(AgeCreator WIN32 ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDRS} ${AC_QRC_SRCS})
 set_target_properties(AgeCreator PROPERTIES
                       COMPILE_DEFINITIONS QT_NO_CAST_FROM_ASCII
 )
 target_link_libraries(AgeCreator HSPlasma QPropertyEditor ${QT_LIBRARIES})
+
+if(QT_VERSION_MINOR LESS 6)
+  target_link_libraries(AgeCreator QtIconLoader)
+endif(QT_VERSION_MINOR LESS 6)
+
 install(TARGETS AgeCreator
         DESTINATION bin
 )
