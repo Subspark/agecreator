@@ -24,12 +24,19 @@
 
 #include "ResManager/plResManager.h"
 
+#if QT_VERSION < 0x040600
+# include "qticonloader.h"
+#endif
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
 #if QT_VERSION >= 0x040600
   if(QIcon::themeName().isEmpty())
     QIcon::setThemeName(ascii("oxygen"));
+#else
+  if(QtIconLoader::iconTheme().isEmpty())
+    QtIconLoader::setIconTheme(ascii("oxygen"));
 #endif
   manager = new plResManager;
   ACMainWindow win;
