@@ -34,6 +34,8 @@ set(AC_SRCS
     gui/ACMainWindow.cpp
     gui/ACNewLayerDialog.cpp
     gui/ACNewObjectDialog.cpp
+    material/ACMaterial.cpp
+    material/ACTexture.cpp
     object/ACDrawable.cpp
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
@@ -52,6 +54,8 @@ set(AC_HDRS
     gui/ACMainWindow.h
     gui/ACNewLayerDialog.h
     gui/ACNewObjectDialog.h
+    material/ACMaterial.h
+    material/ACTexture.h
     object/ACDrawable.h
     object/ACObject.h
     object/ACPhysicalDrawable.h
@@ -73,9 +77,10 @@ if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}
-                ${CMAKE_CURRENT_SOURCE_DIR}/object
-                ${CMAKE_CURRENT_SOURCE_DIR}/gui
+                    ${CMAKE_CURRENT_SOURCE_DIR}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/gui
+                    ${CMAKE_CURRENT_SOURCE_DIR}/material
+                    ${CMAKE_CURRENT_SOURCE_DIR}/object
 )
 
 add_subdirectory(3rdparty/QPropertyEditor)
