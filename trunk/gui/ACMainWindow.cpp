@@ -28,8 +28,45 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QPointer>
+#include <qmessagebox.h>
 
 static const char *age_file_type = QT_TR_NOOP("Age Files (*.age)");
+
+static const char *ac_license = QT_TR_NOOP(
+"<html>AgeCreator: A level editor for Uru<br>"
+"Copyright (C) 2010 Branan Riley<br>"
+"<a href=\"http://code.google.com/p/agecreator\">http://code.google.com/p/agecreator</a><br>"
+"<br>"
+"This program is free software: you can redistribute it and/or modify"
+"it under the terms of the GNU General Public License as published by"
+"the Free Software Foundation, either version 3 of the License, or"
+"(at your option) any later version.<br>"
+"<br>"
+"This program is distributed in the hope that it will be useful,"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+"GNU General Public License for more details.<br>"
+"<br>"
+"You should have received a copy of the GNU General Public License"
+"along with this program.  If not, see <http://www.gnu.org/licenses/></html>");
+
+static const char *hsplasma_license = QT_TR_NOOP(
+"<html>libHSPlasma: Open-source library for Plasma data types<br>"
+"Written by Zrax<br>"
+"<a href=\"http://code.google.com/p/libhsplasma\">http://code.google.com/p/libhsplasma</a><br>"
+"<br>"
+"This program is free software: you can redistribute it and/or modify"
+"it under the terms of the GNU General Public License as published by"
+"the Free Software Foundation, either version 3 of the License, or"
+"(at your option) any later version.<br>"
+"<br>"
+"This program is distributed in the hope that it will be useful,"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+"GNU General Public License for more details.<br>"
+"<br>"
+"You should have received a copy of the GNU General Public License"
+"along with this program.  If not, see <http://www.gnu.org/licenses/></html>");
 
 ACMainWindow::ACMainWindow()
   : current_age(NULL)
@@ -60,6 +97,21 @@ ACMainWindow::~ACMainWindow()
 {
   if(current_age)
     delete current_age;
+}
+
+void ACMainWindow::about()
+{
+  QMessageBox::about(this, tr("About Age Creator"), tr(ac_license));
+}
+
+void ACMainWindow::aboutHSPlasma()
+{
+  QMessageBox::about(this, tr("About libHSPlasma"), tr(hsplasma_license));
+}
+
+void ACMainWindow::aboutQt()
+{
+  QMessageBox::aboutQt(this);
 }
 
 void ACMainWindow::closeAge()

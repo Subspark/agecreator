@@ -34,6 +34,9 @@ public:
   ~ACMainWindow();
 
 private slots:
+  void about();
+  void aboutQt();
+  void aboutHSPlasma();
   void closeAge();
   void newAge();
   void importAge();
