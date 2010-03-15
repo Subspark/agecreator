@@ -11,6 +11,7 @@
 <file>./icons/oxygen/16x16/actions/draw-rectangle.png</file>
 <file>./icons/oxygen/16x16/actions/draw-triangle.png</file>
 <file>./icons/oxygen/16x16/actions/folder-new.png</file>
+<file>./icons/oxygen/16x16/actions/help-about.png</file>
 <file>./icons/oxygen/16x16/actions/list-add-user.png</file>
 <file>./icons/oxygen/16x16/actions/list-add.png</file>
 <file>./icons/oxygen/16x16/actions/list-remove.png</file>
@@ -28,6 +29,7 @@
 <file>./icons/oxygen/22x22/actions/draw-rectangle.png</file>
 <file>./icons/oxygen/22x22/actions/draw-triangle.png</file>
 <file>./icons/oxygen/22x22/actions/folder-new.png</file>
+<file>./icons/oxygen/22x22/actions/help-about.png</file>
 <file>./icons/oxygen/22x22/actions/list-add-user.png</file>
 <file>./icons/oxygen/22x22/actions/list-add.png</file>
 <file>./icons/oxygen/22x22/actions/list-remove.png</file>
@@ -45,6 +47,7 @@
 <file>./icons/oxygen/32x32/actions/draw-rectangle.png</file>
 <file>./icons/oxygen/32x32/actions/draw-triangle.png</file>
 <file>./icons/oxygen/32x32/actions/folder-new.png</file>
+<file>./icons/oxygen/32x32/actions/help-about.png</file>
 <file>./icons/oxygen/32x32/actions/list-add-user.png</file>
 <file>./icons/oxygen/32x32/actions/list-add.png</file>
 <file>./icons/oxygen/32x32/actions/list-remove.png</file>
@@ -62,6 +65,7 @@
 <file>./icons/oxygen/48x48/actions/draw-rectangle.png</file>
 <file>./icons/oxygen/48x48/actions/draw-triangle.png</file>
 <file>./icons/oxygen/48x48/actions/folder-new.png</file>
+<file>./icons/oxygen/48x48/actions/help-about.png</file>
 <file>./icons/oxygen/48x48/actions/list-add-user.png</file>
 <file>./icons/oxygen/48x48/actions/list-add.png</file>
 <file>./icons/oxygen/48x48/actions/list-remove.png</file>

@@ -82,6 +82,10 @@ ACMainWindow::ACMainWindow()
   ui.actionAgeImport->setIcon(ACIcon("document-import"));
   ui.actionAgeExport->setIcon(ACIcon("document-export"));
   ui.actionAgeProperties->setIcon(ACIcon("configure"));
+
+  ui.actionAboutAgeCreator->setIcon(ACIcon("help-about"));
+  ui.actionAboutHSPlasma->setIcon(ACIcon("help-about"));
+  ui.actionAboutQt->setIcon(ACIcon("help-about"));
   
   ui.buttonAddObject->setIcon(ACIcon("list-add"));
   ui.buttonDelObject->setIcon(ACIcon("list-remove"));
