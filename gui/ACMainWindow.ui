@@ -53,9 +53,18 @@
     <addaction name="actionToggleObjectProperties"/>
     <addaction name="actionToggle3DPreview"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAboutAgeCreator"/>
+    <addaction name="actionAboutHSPlasma"/>
+    <addaction name="actionAboutQt"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAge"/>
    <addaction name="menuWindows"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -205,11 +214,6 @@
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionLayerAdd">
-   <property name="text">
-    <string>&amp;Add</string>
-   </property>
-  </action>
   <action name="actionAgeProperties">
    <property name="text">
     <string>Properties...</string>
@@ -248,17 +252,17 @@
     <string>Object Properties</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="actionAboutAgeCreator">
    <property name="text">
-    <string>About</string>
+    <string>About Age Creator</string>
    </property>
   </action>
-  <action name="actionAbout_HSPlasma">
+  <action name="actionAboutHSPlasma">
    <property name="text">
     <string>About HSPlasma</string>
    </property>
   </action>
-  <action name="actionAbout_Qt">
+  <action name="actionAboutQt">
    <property name="text">
     <string>About Qt</string>
    </property>
@@ -460,11 +464,62 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAboutAgeCreator</sender>
+   <signal>triggered()</signal>
+   <receiver>ACMainWindow</receiver>
+   <slot>about()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAboutQt</sender>
+   <signal>triggered()</signal>
+   <receiver>ACMainWindow</receiver>
+   <slot>aboutQt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAboutHSPlasma</sender>
+   <signal>triggered()</signal>
+   <receiver>ACMainWindow</receiver>
+   <slot>aboutHSPlasma()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newAge()</slot>
   <slot>closeAge()</slot>
   <slot>importAge()</slot>
   <slot>exportAge()</slot>
+  <slot>about()</slot>
+  <slot>aboutQt()</slot>
+  <slot>aboutHSPlasma()</slot>
  </slots>
 </ui>
