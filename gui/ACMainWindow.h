@@ -25,6 +25,7 @@
 #include "ui_ACMainWindow.h"
 
 class ACAge;
+class QSignalMapper;
 
 class ACMainWindow : public QMainWindow
 {
@@ -44,10 +45,12 @@ private slots:
   void currentObjectChanged(const QModelIndex &current);
 
 private:
+  QSignalMapper *mapper;
   ACAge* current_age;
   Ui_ACMainWindow ui;
   void setupAgeGui();
   void teardownAgeGui();
+  void setupAddActions();
 };
 
 #endif // ACMAINWINDOW_H

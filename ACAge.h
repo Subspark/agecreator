@@ -41,6 +41,12 @@ class ACAge : public QAbstractItemModel
   Q_PROPERTY(int sequencePrefix READ sequencePrefix)
   Q_PROPERTY(PlasmaVer plasmaVersion READ plasmaVersion WRITE setPlasmaVersion)
 public:
+  enum ACObjectType {
+    idSpawnPoint,
+    idPhysDrawable,
+    idDrawable
+  };
+
   ACAge(const QString &);
   ACAge(const QString &, QObject *parent);
   ~ACAge();
@@ -77,16 +83,14 @@ public:
   };
 
 public slots:
-  int addLayer(const QString& name);
-  int addObject(const QString &name, int type);
+  void addLayer(QString name = QString());
+  void addObject(int type);
   void setPlasmaVersion(PlasmaVer ver);
   void setName(const QString &);
   void setSequencePrefix(int);
   void setMaxCapacity(short);
   void setSelectionModel(QItemSelectionModel *model);
-  void addObject();
 //  void delObject();
-  void addLayer();
 
 private:
   plAgeInfo *age;

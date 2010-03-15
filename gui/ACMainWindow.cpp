@@ -28,6 +28,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QPointer>
+#include <QSignalMapper>
 #include <qmessagebox.h>
 
 static const char *age_file_type = QT_TR_NOOP("Age Files (*.age)");
@@ -95,6 +96,7 @@ ACMainWindow::ACMainWindow()
   
   // This function sets things up for when there is no age loaded
   teardownAgeGui();
+  setupAddActions();
 }
 
 ACMainWindow::~ACMainWindow()
@@ -173,7 +175,7 @@ void ACMainWindow::setupAgeGui()
   ui.buttonAddObject->setEnabled(true);
   ui.buttonDelObject->setEnabled(true);
   ui.buttonAddLayer->setEnabled(true);
-  connect(ui.buttonAddObject, SIGNAL(clicked()), current_age, SLOT(addObject()));
+  connect(mapper, SIGNAL(mapped(int)), current_age, SLOT(addObject(int)));
   connect(ui.buttonDelObject, SIGNAL(clicked()), current_age, SLOT(delObject()));
   connect(ui.buttonAddLayer, SIGNAL(clicked()), current_age, SLOT(addLayer()));
   connect(current_age, SIGNAL(rowsInserted(const QModelIndex&, int, int)), ui.preview3d, SLOT(updateGL()));
@@ -194,4 +196,21 @@ void ACMainWindow::teardownAgeGui()
   ui.buttonDelObject->setEnabled(false);
   ui.buttonAddLayer->setEnabled(false);
   ui.preview3d->setAge(0);
+}
+
+void ACMainWindow::setupAddActions()
+{
+  mapper = new QSignalMapper(this);
+  QAction *action;
+  QMenu *menu = new QMenu;
+  action = menu->addAction(ACIcon("list-add-user"), tr("Spawn Point"));
+  connect(action, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+  mapper->setMapping(action, ACAge::idSpawnPoint);
+  action = menu->addAction(ACIcon("draw-rectangle"), tr("World Object"));
+  connect(action, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+  mapper->setMapping(action, ACAge::idPhysDrawable);
+  action = menu->addAction(ACIcon("draw-triangle"), tr("World Object (no physics)"));
+  connect(action, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+  mapper->setMapping(action, ACAge::idDrawable);
+  ui.buttonAddObject->setMenu(menu);
 }
