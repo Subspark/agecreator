@@ -19,8 +19,6 @@
 
 #include "ACAge.h"
 #include "ACLayer.h"
-#include "ACNewLayerDialog.h"
-#include "ACNewObjectDialog.h"
 #include "ACUtil.h"
 
 #include "ACObject.h"
@@ -43,13 +41,6 @@
 #include <QPointer>
 #include <QRegExpValidator>
 #include <QStringList>
-
-// This must be kept in sync with the combo box in ACNewObjectDialog.ui
-enum objects {
-  idSpawnPoint,
-  idPhysDrawable,
-  idDrawable
-};
 
 //TODO: Generate this from actual user fog settings
 const char *fni_string=
@@ -289,7 +280,7 @@ void ACAge::setSelectionModel(QItemSelectionModel *model)
 
 // Non-setters Slots
 
-int ACAge::addLayer(const QString &name)
+void ACAge::addLayer(QString name)
 {
   ACLayer *l;
   int largest_suffix = 0;
@@ -297,11 +288,11 @@ int ACAge::addLayer(const QString &name)
     foreach(ACLayer *layer, layers) {
       if(layer->suffix() > largest_suffix)
 	largest_suffix = layer->suffix();
-      if(layer->name().toLower() == name.toLower())
-	return Exists;
     }
     largest_suffix++;
   }
+  if(name.isEmpty())
+    name = ascii("Layer")+ascii("%1").arg(largest_suffix);
   l = new ACLayer(name, largest_suffix, this);
   plAgeInfo::PageEntry pe;
   pe.fName = toPlasma(l->name());
@@ -311,20 +302,26 @@ int ACAge::addLayer(const QString &name)
   layers.append(l);
   endInsertRows();
   dirty = true;
-  return Created;
 }
 
-int ACAge::addObject(const QString &name, int object_type)
+void ACAge::addObject(int object_type)
 {
   ACLayer *current_layer;
   QModelIndex idx = selection_model->currentIndex();
   if(idx == QModelIndex())
-    return NoParent;
+    return;
   if(idx.parent() != QModelIndex())
     idx = idx.parent();
   current_layer = static_cast<ACLayer*>(idx.internalPointer());
-  if(current_layer->findObject(name) != -1)
-    return Exists;
+  QString name;
+  int id = 0;
+  bool ok = false;
+  while(!ok) {
+    name = ascii("Object_")+ascii("%1").arg(id);
+    if(current_layer->findObject(name) == -1)
+      ok = true;
+    id++;
+  }
   ACObject *new_object;
   switch(object_type) {
     case idSpawnPoint: {
@@ -336,10 +333,10 @@ int ACAge::addObject(const QString &name, int object_type)
       QString model_file = QFileDialog::getOpenFileName(NULL, tr("Import Age"), QString(), tr("Model Files (*.obj)"));
       if(model_file.isEmpty()) {
         // this tells the generic addObject() function to return
-        return Created;
+        return;
       } else if(!(qobject_cast<ACPhysicalDrawable*>(new_object)->loadFromFile(model_file))) {
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
-        return Created;
+        return;
       }
       break;
     }
@@ -348,51 +345,20 @@ int ACAge::addObject(const QString &name, int object_type)
       QString model_file = QFileDialog::getOpenFileName(NULL, tr("Import Age"), QString(), tr("Model Files (*.obj)"));
       if(model_file.isEmpty()) {
         // this tells the generic addObject() function to return
-        return Created;
+        return;
       } else if(!(qobject_cast<ACDrawable*>(new_object)->loadFromFile(model_file))) {
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
-        return Created;
+        return;
       }
       break;
     }
     default:
       break;
   }
-  beginInsertRows(idx, current_layer->objectCount(), current_layer->objectCount());
-  current_layer->addObject(new_object);
-  endInsertRows();
-  return Created;
-}
-
-void ACAge::addObject()
-{
-  QPointer<ACNewObjectDialog> dialog = new ACNewObjectDialog;
-  while(true) {
-    if(dialog->exec() == QDialog::Rejected)
-      break;
-    int res = addObject(dialog->getName(), dialog->getType());
-    if(res == Exists) {
-      QMessageBox::critical(NULL, tr("New Object"), tr("An object with that name already exists on the current layer"));
-    } else if(res == NoParent) {
-      QMessageBox::critical(NULL, tr("New Object"), tr("A layer must be selected before you can add an object"));
-      break;
-    } else {
-      break;
-    }
-  }
-}
-
-void ACAge::addLayer()
-{
-  QPointer<ACNewLayerDialog> dialog = new ACNewLayerDialog;
-  while(true) {
-    if(dialog->exec() == QDialog::Rejected)
-      break;
-    if(addLayer(dialog->getName()) == Exists) {
-      QMessageBox::critical(NULL, tr("New Layer"), tr("A layer with that name already exists"));
-    } else {
-      break;
-    }
+  if(new_object) {
+    beginInsertRows(idx, current_layer->objectCount(), current_layer->objectCount());
+    current_layer->addObject(new_object);
+    endInsertRows();
   }
 }
 

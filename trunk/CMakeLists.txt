@@ -32,8 +32,6 @@ set(AC_SRCS
     gui/ACExportDialog.cpp
     gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
-    gui/ACNewLayerDialog.cpp
-    gui/ACNewObjectDialog.cpp
     material/ACMaterial.cpp
     material/ACTexture.cpp
     object/ACDrawable.cpp
@@ -55,8 +53,6 @@ set(AC_HDRS
     gui/ACExportDialog.h
     gui/ACGLWidget.h
     gui/ACMainWindow.h
-    gui/ACNewLayerDialog.h
-    gui/ACNewObjectDialog.h
     material/ACMaterial.h
     material/ACTexture.h
     object/ACDrawable.h
@@ -71,8 +67,6 @@ set(AC_HDRS
 set(AC_UIS
     gui/ACExportDialog.ui
     gui/ACMainWindow.ui
-    gui/ACNewLayerDialog.ui
-    gui/ACNewObjectDialog.ui
 )
 
 QT4_WRAP_UI(AC_UI_HDRS ${AC_UIS})
