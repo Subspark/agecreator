@@ -129,16 +129,23 @@ int ACAge::columnCount(const QModelIndex &/*parent*/) const
   return 1;
 }
 
+Qt::ItemFlags ACAge::flags(const QModelIndex &index) const
+{
+  if(!index.isValid())
+    return Qt::ItemIsEnabled;
+  return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+}
+
 QVariant ACAge::data(const QModelIndex &index, int role) const
 {
-  if(role != Qt::DisplayRole && role != Qt::DecorationRole)
+    if(role != Qt::DisplayRole && role != Qt::DecorationRole && role != Qt::EditRole)
     return QVariant();
   
   if(index == QModelIndex())
     return QVariant();
 
   if(index.parent() == QModelIndex())
-    if(role == Qt::DisplayRole)
+    if(role == Qt::DisplayRole || role == Qt::EditRole)
       return QVariant(layers[index.row()]->name());
     else
       if(layers[index.row()]->isDirty())
@@ -147,11 +154,26 @@ QVariant ACAge::data(const QModelIndex &index, int role) const
         return QVariant(ACIcon("folder"));
   else {
     ACObject *obj = static_cast<ACObject*>(index.internalPointer());
-    if(role == Qt::DisplayRole)
+    if(role == Qt::DisplayRole || role == Qt::EditRole)
       return QVariant(obj->name());
     else
       return QVariant(obj->icon());
   }
+}
+
+bool ACAge::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+  if(!index.isValid() || role != Qt::EditRole)
+    return false;
+  if(index.parent() == QModelIndex()) {
+    layers[index.row()]->setName(value.toString());
+    layers[index.row()]->makeDirty();
+  } else {
+    ACObject *obj = static_cast<ACObject*>(index.internalPointer());
+    obj->setName(value.toString());
+    layers[index.parent().row()]->makeDirty();
+  }
+  return true;
 }
 
 QModelIndex ACAge::index(int row, int column, const QModelIndex &parent) const
@@ -360,6 +382,7 @@ void ACAge::addObject(int object_type)
     current_layer->addObject(new_object);
     endInsertRows();
   }
+  
 }
 
 QStringList ACAge::getLayers() const
