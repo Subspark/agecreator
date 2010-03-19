@@ -42,7 +42,6 @@ private slots:
   void newAge();
   void importAge();
   void exportAge();
-  void currentObjectChanged(const QModelIndex &current);
 
 private:
   QSignalMapper *mapper;

@@ -22,7 +22,6 @@
 #include "ACAgeWizard.h"
 #include "ACExportDialog.h"
 #include "ACGLWidget.h"
-#include "ACProperties.h"
 #include "ACUtil.h"
 
 #include <QFileDialog>
@@ -92,9 +91,6 @@ ACMainWindow::ACMainWindow()
   ui.buttonDelObject->setIcon(ACIcon("list-remove"));
   ui.buttonAddLayer->setIcon(ACIcon("folder-new"));
 
-  ui.propEditor->registerCustomPropertyCB(createCustomProperty);
-  
-  // This function sets things up for when there is no age loaded
   teardownAgeGui();
   setupAddActions();
 }
@@ -160,11 +156,6 @@ void ACMainWindow::exportAge()
     return;
   current_age->setPlasmaVersion(dialog->plasmaVersion());
   current_age->exportAge(dialog->exportPath());
-}
-
-void ACMainWindow::currentObjectChanged(const QModelIndex& current)
-{
-  ui.propEditor->setObject(static_cast<QObject*>(current.internalPointer()));
 }
 
 void ACMainWindow::setupAgeGui()

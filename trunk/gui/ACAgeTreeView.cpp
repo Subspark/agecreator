@@ -18,6 +18,7 @@
 */
 
 #include "ACAgeTreeView.h"
+#include "ACObjectNameDelegate.h"
 #include "ACUtil.h"
 
 #include <QAction>
@@ -29,6 +30,8 @@ ACAgeTreeView::ACAgeTreeView(QWidget *parent)
   setDragDropMode(InternalMove);
   setSelectionMode(ExtendedSelection);
   setHeaderHidden(true);
+  ACObjectNameDelegate *delegate = new ACObjectNameDelegate(this);
+  setItemDelegate(delegate);
 }
 
 void ACAgeTreeView::setModel(QAbstractItemModel *model)

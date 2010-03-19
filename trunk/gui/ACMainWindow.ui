@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1017</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -75,7 +75,7 @@
     <string>Age Objects</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>1</number>
+    <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -155,24 +155,6 @@
      </property>
      <item>
       <widget class="ACGLWidget" name="preview3d" native="true"/>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_3">
-   <property name="windowTitle">
-    <string>Object Properties</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <property name="margin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPropertyEditorWidget" name="propEditor"/>
      </item>
     </layout>
    </widget>
@@ -282,11 +264,6 @@
    <class>ACAgeTreeView</class>
    <extends>QTreeView</extends>
    <header>ACAgeTreeView.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QPropertyEditorWidget</class>
-   <extends>QTreeView</extends>
-   <header>QPropertyEditorWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -404,22 +381,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionToggleObjectProperties</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>dockWidget_3</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>888</x>
-     <y>344</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>dockWidget</sender>
    <signal>visibilityChanged(bool)</signal>
    <receiver>actionToggleObjectList</receiver>
@@ -444,22 +405,6 @@
     <hint type="sourcelabel">
      <x>888</x>
      <y>61</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dockWidget_3</sender>
-   <signal>visibilityChanged(bool)</signal>
-   <receiver>actionToggleObjectProperties</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>888</x>
-     <y>344</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
