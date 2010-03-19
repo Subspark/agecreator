@@ -32,15 +32,13 @@ set(AC_SRCS
     gui/ACExportDialog.cpp
     gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
+    gui/ACObjectNameDelegate.cpp
     material/ACMaterial.cpp
     material/ACTexture.cpp
     object/ACDrawable.cpp
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
     object/ACSpawnPoint.cpp
-    properties/ACObjectName.cpp
-    properties/ACObjectNameProperty.cpp
-    properties/ACProperties.cpp
 )
 
 set(AC_HDRS
@@ -53,15 +51,13 @@ set(AC_HDRS
     gui/ACExportDialog.h
     gui/ACGLWidget.h
     gui/ACMainWindow.h
+    gui/ACObjectNameDelegate.h
     material/ACMaterial.h
     material/ACTexture.h
     object/ACDrawable.h
     object/ACObject.h
     object/ACPhysicalDrawable.h
     object/ACSpawnPoint.h
-    properties/ACObjectName.h
-    properties/ACObjectNameProperty.h
-    properties/ACProperties.h
 )
 
 set(AC_UIS
@@ -84,9 +80,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/properties
 )
 
-add_subdirectory(3rdparty/QPropertyEditor)
-include_directories(3rdparty/QPropertyEditor)
-
 if(QT_VERSION_MINOR LESS 6)
   add_subdirectory(3rdparty/QtIconLoader)
   include_directories(3rdparty/QtIconLoader)
@@ -96,7 +89,7 @@ add_executable(AgeCreator WIN32 ${AC_SRCS} ${AC_MOC_SRCS} ${AC_HDRS} ${AC_UI_HDR
 set_target_properties(AgeCreator PROPERTIES
                       COMPILE_DEFINITIONS QT_NO_CAST_FROM_ASCII
 )
-target_link_libraries(AgeCreator HSPlasma QPropertyEditor ${QT_LIBRARIES})
+target_link_libraries(AgeCreator HSPlasma ${QT_LIBRARIES})
 
 if(QT_VERSION_MINOR LESS 6)
   target_link_libraries(AgeCreator QtIconLoader)

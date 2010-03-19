@@ -23,8 +23,6 @@
 #include <QObject>
 #include <QIcon>
 
-#include "ACObjectName.h"
-
 #include "PRP/KeyedObject/plKey.h"
 
 class plSceneObject;
@@ -35,8 +33,7 @@ class ACPage;
 class ACObject : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(ACObjectName name READ name WRITE setName DESIGNABLE true USER true)
-  Q_CLASSINFO("ACObject", "Object")
+  Q_PROPERTY(QString name READ name WRITE setName)
 public:
   ACObject(const QString& name);
   ACObject(plKey key);
