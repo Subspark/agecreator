@@ -43,6 +43,14 @@ void ACAgeTreeView::setModel(QAbstractItemModel *model)
   connect(m, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(updateActions(QModelIndex)));
 }
 
+void ACAgeTreeView::rowsInserted(const QModelIndex& parent, int start, int end)
+{
+  QTreeView::rowsInserted(parent, start, end);
+  QModelIndex index = model()->index(start, 0, parent);
+  setCurrentIndex(index);
+  edit(index);
+}
+
 void ACAgeTreeView::updateActions(const QModelIndex &index)
 {
   //TODO: special actions for certain object types will be handled here.
