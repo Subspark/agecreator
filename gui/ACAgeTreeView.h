@@ -28,6 +28,8 @@ class ACAgeTreeView : public QTreeView
 public:
   ACAgeTreeView(QWidget *parent = 0);
   void setModel(QAbstractItemModel *model);
+protected:
+  void rowsInserted(const QModelIndex &parent, int start, int end);
 private slots:
   void updateActions(const QModelIndex &index);
 };
