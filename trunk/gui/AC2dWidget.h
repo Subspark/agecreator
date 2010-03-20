@@ -36,7 +36,7 @@ public:
 
 protected:
   void initializeGL();
-//  void resizeGL(int w, int h);
+  void resizeGL(int w, int h);
   void paintGL();
   
 //  void keyPressEvent(QKeyEvent *event);
@@ -45,6 +45,7 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event);
 
 private:
+  double size_w, size_h;
   ACAge *current_age;
 };
 
