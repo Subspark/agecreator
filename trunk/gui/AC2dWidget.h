@@ -42,6 +42,7 @@ protected:
 //  void keyPressEvent(QKeyEvent *event);
 //  void mousePressEvent(QMouseEvent *event);
 //  void mouseMoveEvent(QMouseEvent *event);
+  void contextMenuEvent(QContextMenuEvent *event);
 
 private:
   ACAge *current_age;

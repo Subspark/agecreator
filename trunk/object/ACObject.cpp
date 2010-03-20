@@ -26,18 +26,23 @@
 #include "PRP/plSceneNode.h"
 #include "Util/hsTArray.hpp"
 
+#include <QMenu>
+#include <QContextMenuEvent>
+
 ACObject::ACObject(const QString& name)
   : QObject(0)
 {
   scene_object = new plSceneObject;
   scene_object->init(toPlasma(name));
   manager->AddObject(plLocation(), scene_object);
+  menu = new QMenu;
 }
 
 ACObject::ACObject(plKey key)
   : QObject(0)
 {
   scene_object = static_cast<plSceneObject*>(key->getObj());
+  menu = new QMenu;
 }
 
 ACObject::~ACObject()
@@ -58,6 +63,11 @@ QString ACObject::name() const
 void ACObject::setName(const QString &name)
 {
   scene_object->getKey()->setName(toPlasma(name));
+}
+
+void ACObject::contextMenu(QContextMenuEvent *event)
+{
+  menu->exec(event->globalPos());
 }
 
 void ACObject::draw() const

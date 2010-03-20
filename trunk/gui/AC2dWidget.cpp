@@ -18,10 +18,16 @@
 */
 
 #include "AC2dWidget.h"
+#include "ACAge.h"
 
 AC2dWidget::AC2dWidget(QWidget *parent)
-  : QGLWidget(parent)
+  : QGLWidget(parent), current_age(0)
 {}
+
+void AC2dWidget::setAge(ACAge *age)
+{
+  current_age = age;
+}
 
 void AC2dWidget::initializeGL()
 {
@@ -31,5 +37,10 @@ void AC2dWidget::initializeGL()
 void AC2dWidget::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void AC2dWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+  // Find the object under the cursor and popup the correct menu
 }
 

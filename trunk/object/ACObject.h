@@ -30,6 +30,9 @@ class plPageInfo;
 
 class ACPage;
 
+class QContextMenuEvent;
+class QMenu;
+
 class ACObject : public QObject
 {
   Q_OBJECT
@@ -42,6 +45,7 @@ public:
   ACPage *page() const;
   QString name() const;
 
+  void contextMenu(QContextMenuEvent *event);
   virtual void draw() const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);
@@ -51,6 +55,7 @@ public slots:
   virtual void setName(const QString &);
 
 protected:
+  QMenu *menu;
   plSceneObject *scene_object;
 };
 

@@ -30,8 +30,7 @@ public:
   void setModel(QAbstractItemModel *model);
 protected:
   void rowsInserted(const QModelIndex &parent, int start, int end);
-private slots:
-  void updateActions(const QModelIndex &index);
+  void contextMenuEvent(QContextMenuEvent *event);
 };
 
 #endif //ACAGETREEVIEW_H

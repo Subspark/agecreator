@@ -33,6 +33,7 @@
 #include <climits>
 
 #include <QFile>
+#include <QMenu>
 
 #include <GL/gl.h>
 
@@ -48,6 +49,8 @@ ACDrawable::ACDrawable(const QString &name)
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   manager->AddObject(plLocation(), drawi);
   scene_object->setDrawInterface(drawi->getKey());
+  
+  menu->addAction(tr("Mesh Properties"));
 }
 
 ACDrawable::ACDrawable(plKey key)
@@ -56,6 +59,8 @@ ACDrawable::ACDrawable(plKey key)
   spans = getSpans(key->getLocation());
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
+  
+  menu->addAction(tr("Mesh Properties"));
 }
 
 ACDrawable::ACDrawable::~ACDrawable()

@@ -18,6 +18,7 @@
 */
 
 #include "ACAgeTreeView.h"
+#include "ACObject.h"
 #include "ACObjectNameDelegate.h"
 #include "ACUtil.h"
 
@@ -41,7 +42,6 @@ void ACAgeTreeView::setModel(QAbstractItemModel *model)
   QTreeView::setModel(model);
   delete m;
   m = selectionModel();
-  connect(m, SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(updateActions(QModelIndex)));
 }
 
 void ACAgeTreeView::rowsInserted(const QModelIndex& parent, int start, int end)
@@ -52,7 +52,10 @@ void ACAgeTreeView::rowsInserted(const QModelIndex& parent, int start, int end)
   edit(index);
 }
 
-void ACAgeTreeView::updateActions(const QModelIndex &index)
+void ACAgeTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-  //TODO: special actions for certain object types will be handled here.
+  ACObject *obj = qobject_cast<ACObject*>(static_cast<QObject*>(currentIndex().internalPointer()));
+  if(obj) {
+    obj->contextMenu(event);
+  }
 }
