@@ -41,7 +41,6 @@ void AC2dWidget::resizeGL(int w, int h)
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  //TODO make this match the URU perspective matrix
   if(w > h) {
     size_w = 50.0*(double(w)/double(h));
     size_h = 50.0;
@@ -59,12 +58,12 @@ void AC2dWidget::paintGL()
   int w = size_w;
   int h = size_h;
   glBegin(GL_LINES);
-  qglColor(palette().color(QPalette::BrightText));
+  qglColor(palette().color(QPalette::Shadow));
   glVertex2f(-size_w, 0.0f);
   glVertex2f(size_w, 0.0f);
   glVertex2f(0.0f, -size_h);
   glVertex2f(0.0f, size_h);
-  qglColor(palette().color(QPalette::Text));
+  qglColor(palette().color(QPalette::Mid));
   for(int i = 5; i < h; i+=5) {
     glVertex2f(-size_w, float(i));
     glVertex2f(size_w, float(i));
