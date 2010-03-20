@@ -183,8 +183,6 @@ void ACDrawable::draw() const
     return;
   size_t draw_key = drawi->getDrawableKey(0);
   plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
-  if(static_cast<plSpan*>(span->getSpan(draw_key))->getSubType() != plSpan::kIcicleSpan)
-    return;
   plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(draw_key));
   hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
   hsTArray<unsigned short> indices = span->getIndices(icicle);
