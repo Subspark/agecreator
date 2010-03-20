@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1017</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -50,7 +50,6 @@
      <string>Windows</string>
     </property>
     <addaction name="actionToggleObjectList"/>
-    <addaction name="actionToggleObjectProperties"/>
     <addaction name="actionToggle3DPreview"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -224,17 +223,6 @@
    </property>
    <property name="text">
     <string>3D Preview</string>
-   </property>
-  </action>
-  <action name="actionToggleObjectProperties">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Object Properties</string>
    </property>
   </action>
   <action name="actionAboutAgeCreator">
