@@ -30,6 +30,7 @@ ACAgeTreeView::ACAgeTreeView(QWidget *parent)
   setDragDropMode(InternalMove);
   setSelectionMode(ExtendedSelection);
   setHeaderHidden(true);
+  setEditTriggers(editTriggers() | SelectedClicked);
   ACObjectNameDelegate *delegate = new ACObjectNameDelegate(this);
   setItemDelegate(delegate);
 }
