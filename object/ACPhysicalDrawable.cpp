@@ -28,6 +28,8 @@
 #include <PRP/Object/plSceneObject.h>
 #include <PRP/plSceneNode.h>
 
+#include <QMenu>
+
 ACPhysicalDrawable::ACPhysicalDrawable(const QString& name)
   : ACDrawable(name)
 {
@@ -50,6 +52,7 @@ ACPhysicalDrawable::ACPhysicalDrawable(const QString& name)
   scene_object->setSimInterface(sim->getKey());
   connect(this, SIGNAL(meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*)),
           this, SLOT(updateCollider(size_t, const plGBufferVertex*, size_t, const unsigned short*)));
+  menu->addAction(tr("Physics Properties"));
 }
 
 ACPhysicalDrawable::ACPhysicalDrawable(plKey key)
@@ -59,6 +62,7 @@ ACPhysicalDrawable::ACPhysicalDrawable(plKey key)
   phys = static_cast<plGenericPhysical*>(sim->getPhysical()->getObj());
   connect(this, SIGNAL(meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*)),
           this, SLOT(updateCollider(size_t, const plGBufferVertex*, size_t, const unsigned short*)));
+  menu->addAction(tr("Physics Properties"));
 }
 
 ACPhysicalDrawable::~ACPhysicalDrawable()
