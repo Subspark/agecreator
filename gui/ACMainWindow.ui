@@ -13,14 +13,14 @@
   <property name="windowTitle">
    <string>AgeCreator</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="AC2dWidget" name="mainView"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>1017</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -252,6 +252,12 @@
    <class>ACAgeTreeView</class>
    <extends>QTreeView</extends>
    <header>ACAgeTreeView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AC2dWidget</class>
+   <extends>QWidget</extends>
+   <header>AC2dWidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
