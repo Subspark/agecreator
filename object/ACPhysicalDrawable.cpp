@@ -35,7 +35,7 @@ ACPhysicalDrawable::ACPhysicalDrawable(const QString& name)
 {
   phys = new plGenericPhysical;
   phys->init(toPlasma(name));
-  phys->setSceneNode(manager->getSceneNode(plLocation())->getKey());
+  phys->setSceneNode(manager->getSceneNode(virtual_loc)->getKey());
   phys->setObject(scene_object->getKey());
   phys->setRestitution(-1.0f);
   phys->setLOSDBs(0x44);
@@ -43,12 +43,12 @@ ACPhysicalDrawable::ACPhysicalDrawable(const QString& name)
   phys->setCategory(0x02000000);
   phys->setPos(hsVector3(0.0f, 0.0f, 0.0f));
   phys->setRot(hsQuat(0.0f, 0.0f, 1.0f, 0.0f));
-  manager->AddObject(plLocation(), phys);
+  manager->AddObject(virtual_loc, phys);
   sim = new plSimulationInterface;
   sim->init(toPlasma(name));
   sim->setOwner(scene_object->getKey());
   sim->setPhysical(phys->getKey());
-  manager->AddObject(plLocation(), sim);
+  manager->AddObject(virtual_loc, sim);
   scene_object->setSimInterface(sim->getKey());
   connect(this, SIGNAL(meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*)),
           this, SLOT(updateCollider(size_t, const plGBufferVertex*, size_t, const unsigned short*)));
@@ -98,9 +98,9 @@ void ACPhysicalDrawable::registerWithPage(ACPage* page)
 
 void ACPhysicalDrawable::unregisterFromPage(ACPage* page)
 {
-  manager->MoveKey(sim->getKey(), plLocation());
-  manager->MoveKey(sim->getKey(), plLocation());
-  phys->setSceneNode(manager->getSceneNode(plLocation())->getKey());
+  manager->MoveKey(sim->getKey(), virtual_loc);
+  manager->MoveKey(sim->getKey(), virtual_loc);
+  phys->setSceneNode(manager->getSceneNode(virtual_loc)->getKey());
   ACDrawable::unregisterFromPage(page);
 }
 

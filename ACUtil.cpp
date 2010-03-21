@@ -20,3 +20,4 @@
 #include "ACUtil.h"
 
 plResManager *manager;
+plLocation virtual_loc;

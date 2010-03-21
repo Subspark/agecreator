@@ -20,6 +20,7 @@
 #ifndef ACUTIL_H
 #define ACUTIL_H
 
+#include <PRP/KeyedObject/plLocation.h>
 #include <Util/plString.h>
 #include <QString>
 
@@ -34,6 +35,7 @@
 
 class plResManager;
 extern plResManager *manager;
+extern plLocation virtual_loc;
 
 inline plString toPlasma(const QString &qs)
 {

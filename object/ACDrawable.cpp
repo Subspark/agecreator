@@ -45,9 +45,9 @@ ACDrawable::ACDrawable(const QString &name)
   drawi = new plDrawInterface;
   drawi->init(toPlasma(name));
   drawi->setOwner(scene_object->getKey());
-  spans = getSpans(plLocation());
+  spans = getSpans(virtual_loc);
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
-  manager->AddObject(plLocation(), drawi);
+  manager->AddObject(virtual_loc, drawi);
   scene_object->setDrawInterface(drawi->getKey());
   
   menu->addAction(tr("Mesh Properties"));
@@ -240,9 +240,9 @@ void ACDrawable::registerWithPage(ACPage* page)
 
 void ACDrawable::unregisterFromPage(ACPage* page)
 {
-  manager->MoveKey(drawi->getKey(), plLocation());
+  manager->MoveKey(drawi->getKey(), virtual_loc);
   disconnect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
-  moveMeshData(plLocation()); // This updates spans as a side effect
+  moveMeshData(virtual_loc); // This updates spans as a side effect
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   ACObject::unregisterFromPage(page);
 }

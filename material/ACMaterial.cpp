@@ -27,7 +27,7 @@ ACMaterial::ACMaterial(const QString &name)
 {
   mat = new hsGMaterial;
   mat->init(toPlasma(name));
-  manager->AddObject(plLocation(), mat);
+  manager->AddObject(virtual_loc, mat);
   addLayer(name + ascii("_layer"));
   mat->setCompFlags(hsGMaterial::kCompSpecular);
 }

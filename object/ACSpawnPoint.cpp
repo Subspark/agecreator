@@ -32,8 +32,8 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
   spawn->init(toPlasma(name));
   coord= new plCoordinateInterface;
   coord->init(toPlasma(name));
-  manager->AddObject(plLocation(), spawn);
-  manager->AddObject(plLocation(), coord);
+  manager->AddObject(virtual_loc, spawn);
+  manager->AddObject(virtual_loc, coord);
   scene_object->setCoordInterface(coord->getKey());
   coord->setOwner(scene_object->getKey());
   scene_object->addModifier(spawn->getKey());
@@ -67,8 +67,8 @@ void ACSpawnPoint::registerWithPage(ACPage *page)
 
 void ACSpawnPoint::unregisterFromPage(ACPage *page)
 {
-  manager->MoveKey(spawn->getKey(), plLocation());
-  manager->MoveKey(coord->getKey(), plLocation());
+  manager->MoveKey(spawn->getKey(), virtual_loc);
+  manager->MoveKey(coord->getKey(), virtual_loc);
   ACObject::unregisterFromPage(page);
 }
 
