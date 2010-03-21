@@ -51,6 +51,7 @@ ACDrawable::ACDrawable(const QString &name)
   scene_object->setDrawInterface(drawi->getKey());
   
   menu->addAction(tr("Mesh Properties"));
+  menu->addAction(tr("Material Properties"));
 }
 
 ACDrawable::ACDrawable(plKey key)
@@ -61,6 +62,7 @@ ACDrawable::ACDrawable(plKey key)
   drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
   
   menu->addAction(tr("Mesh Properties"));
+  menu->addAction(tr("Material Properties"));
 }
 
 ACDrawable::ACDrawable::~ACDrawable()
@@ -76,25 +78,44 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   format = fmt;
 
   // insert the new data
+  hsTArray<plGBufferVertex> current_verts;
+  hsTArray<unsigned short> current_indices;
+  hsTArray<plGBufferCell> current_cells;
   size_t group = spans->getGroupId(span, format);
-  size_t vertex_offset = 0;
-  for(size_t i = 0; i < span->getBuffer(group)->getNumVertBuffers(); i++)
-    vertex_offset += span->getBuffer(group)->getVertBufferSize(i);
-  size_t index_offset = 0;
-  for(size_t i = 0; i < span->getBuffer(group)->getNumIdxBuffers(); i++)
-    index_offset += span->getBuffer(group)->getIdxBufferCount(i);
-  span->addVerts(group, verts);
-  span->addIndices(group, indices);
-  plGBufferCell cell;
-  cell.fVtxStart = 0;
-  cell.fColorStart=UINT_MAX;
-  cell.fLength = vertex_offset + verts.getSize();
-  hsTArray<plGBufferCell> cells;
-  cells.append(cell);
+  if(span->getBuffer(group)->getNumVertBuffers()) {
+    current_verts = span->getBuffer(group)->getVertices(0);
+    current_cells = span->getBuffer(group)->getCells(0);
+  } else {
+    plGBufferCell cell;
+    cell.fVtxStart = 0;
+    cell.fColorStart = UINT_MAX;
+    cell.fLength = 0;
+    current_cells.append(cell);
+  }
+  if(span->getBuffer(group)->getNumIdxBuffers())
+    current_indices = span->getBuffer(group)->getIndices(0);
+  size_t vertex_offset = current_verts.getSize();
+  size_t index_offset = current_indices.getSize();
+  span->getBuffer(group)->clearVertices();
+  span->getBuffer(group)->clearIndices();
   span->getBuffer(group)->clearCells();
-  span->addCells(group, cells);
+//  span->addVerts(group, verts);
+//  span->addIndices(group, indices);
+//   plGBufferCell cell;
+//   cell.fVtxStart = 0;
+//   cell.fColorStart=UINT_MAX;
+//   cell.fLength = verts.getSize();
+//   hsTArray<plGBufferCell> cells;
+//   cells.append(cell);
+//  span->addCells(group, cells); 
+  current_verts.append(verts);
+  current_indices.append(indices);
+  current_cells[0].fLength = current_indices.getSize();
+  span->addVerts(group, current_verts);
+  span->addIndices(group, current_indices);
+  span->addCells(group, current_cells);
   plIcicle icicle;
-  float min_x, min_y, min_z, max_x, max_y, max_z;
+  float min_x = 0.0f, min_y = 0.0f, min_z = 0.0f, max_x = 0.0f, max_y = 0.0f, max_z = 0.0f;
   for(unsigned int i = 0; i < verts.getSize(); i++) {
     if(verts[i].fPos.X > max_x)
       max_x = verts[i].fPos.X;
@@ -120,6 +141,10 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   icicle.setWorldBounds(bounds);
   //TODO: Material support
   icicle.setMaterialIdx(0);
+  icicle.setIBufferIdx(0);
+  icicle.setVBufferIdx(0);
+  icicle.setCellIdx(0);
+  icicle.setCellOffset(vertex_offset);
   icicle.setIStartIdx(index_offset);
   icicle.setVStartIdx(vertex_offset);
   icicle.setILength(indices.getSize());
@@ -159,9 +184,9 @@ bool ACDrawable::loadFromFile(const QString &filename)
     } else if(line.startsWith('f')) {
       hsVector3 p0, p1, p2;
       unsigned short i0, i1, i2;
-      i0 = line.split(' ')[1].split('/')[0].toShort();
-      i1 = line.split(' ')[2].split('/')[0].toShort();
-      i2 = line.split(' ')[3].split('/')[0].toShort();
+      i0 = line.split(' ')[1].split('/')[0].toShort() - 1;
+      i1 = line.split(' ')[2].split('/')[0].toShort() - 1;
+      i2 = line.split(' ')[3].split('/')[0].toShort() - 1;
       p0 = verts[i0].fPos;
       p1 = verts[i1].fPos;
       p2 = verts[i2].fPos;
