@@ -171,6 +171,8 @@ void ACMainWindow::setupAgeGui()
   connect(ui.buttonAddLayer, SIGNAL(clicked()), current_age, SLOT(addLayer()));
   connect(current_age, SIGNAL(rowsInserted(const QModelIndex&, int, int)), ui.preview3d, SLOT(updateGL()));
   connect(current_age, SIGNAL(rowsRemoved(const QModelIndex&, int, int)), ui.preview3d, SLOT(updateGL()));
+  connect(current_age, SIGNAL(rowsInserted(const QModelIndex&, int, int)), ui.mainView, SLOT(updateGL()));
+  connect(current_age, SIGNAL(rowsRemoved(const QModelIndex&, int, int)), ui.mainView, SLOT(updateGL()));
   ui.sceneTreeView->setModel(current_age);
   connect(ui.sceneTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(currentObjectChanged(QModelIndex)));
   current_age->setSelectionModel(ui.sceneTreeView->selectionModel());
