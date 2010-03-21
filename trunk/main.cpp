@@ -28,6 +28,8 @@
 # include "qticonloader.h"
 #endif
 
+#include <climits>
+
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
@@ -39,6 +41,11 @@ int main(int argc, char *argv[])
     QtIconLoader::setIconTheme(ascii("oxygen"));
 #endif
   manager = new plResManager;
+  manager->setVer(pvUniversal);
+  virtual_loc.setVer(pvUniversal);
+  virtual_loc.setVirtual();
+  virtual_loc.setSeqPrefix(INT_MAX);
+  virtual_loc.setPageNum(INT_MAX);
   ACMainWindow win;
   win.show();
   return app.exec();

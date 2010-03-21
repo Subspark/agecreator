@@ -26,7 +26,7 @@ ACTexture::ACTexture(const QString &name)
 {
   layer = new plLayer;
   layer->init(toPlasma(name));
-  manager->AddObject(plLocation(), layer);
+  manager->AddObject(virtual_loc, layer);
   layer->setAmbient(hsColorRGBA());
   layer->setPreshade(hsColorRGBA(1.0f, 1.0f, 1.0f));
   layer->setRuntime(hsColorRGBA(1.0f, 1.0f, 1.0f));

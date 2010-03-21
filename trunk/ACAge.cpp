@@ -75,11 +75,11 @@ ACAge::ACAge(const QString& name)
   layers[0]->addObject(new ACSpawnPoint(ascii("LinkInPointDefault")));
   // a "NULL" page, where objects that have been created but not yet assigned a page are stored
   plPageInfo *info = new plPageInfo;
-  info->setLocation(plLocation());
+  info->setLocation(virtual_loc);
   manager->AddPage(info);
   plSceneNode *null_node = new plSceneNode;
   null_node->init(toPlasma(name));
-  manager->AddObject(plLocation(), null_node);
+  manager->AddObject(virtual_loc, null_node);
   dirty = true;
 }
 
@@ -108,18 +108,18 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   builtins = new ACPage(manager->ReadPage(toPlasma(builtins_name))->getLocation(), this);
   // a "NULL" page, where objects that have been created but not yet assinged a page are stored
   plPageInfo *info = new plPageInfo;
-  info->setLocation(plLocation());
+  info->setLocation(virtual_loc);
   manager->AddPage(info);
   plSceneNode *null_node = new plSceneNode;
   null_node->init(toPlasma(name()));
-  manager->AddObject(plLocation(), null_node);
+  manager->AddObject(virtual_loc, null_node);
   dirty = false;
 }
 
 ACAge::~ACAge()
 {
   manager->DelAge(toPlasma(name()));
-  manager->DelPage(plLocation());
+  manager->DelPage(virtual_loc);
 }
 
 // Model/View functions

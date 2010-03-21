@@ -34,7 +34,7 @@ ACObject::ACObject(const QString& name)
 {
   scene_object = new plSceneObject;
   scene_object->init(toPlasma(name));
-  manager->AddObject(plLocation(), scene_object);
+  manager->AddObject(virtual_loc, scene_object);
   menu = new QMenu;
 }
 
@@ -92,7 +92,7 @@ void ACObject::registerWithPage(ACPage *page)
 
 void ACObject::unregisterFromPage(ACPage *page)
 {
-  manager->MoveKey(scene_object->getKey(), plLocation());
+  manager->MoveKey(scene_object->getKey(), virtual_loc);
   ACLayer *layer;
   if((layer = qobject_cast<ACLayer*>(page))) {
     layer->scene()->delSceneObject(layer->scene()->getSceneObjects().find(scene_object->getKey()));
