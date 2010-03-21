@@ -99,18 +99,11 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   span->getBuffer(group)->clearVertices();
   span->getBuffer(group)->clearIndices();
   span->getBuffer(group)->clearCells();
-//  span->addVerts(group, verts);
-//  span->addIndices(group, indices);
-//   plGBufferCell cell;
-//   cell.fVtxStart = 0;
-//   cell.fColorStart=UINT_MAX;
-//   cell.fLength = verts.getSize();
-//   hsTArray<plGBufferCell> cells;
-//   cells.append(cell);
-//  span->addCells(group, cells); 
   current_verts.append(verts);
-  current_indices.append(indices);
-  current_cells[0].fLength = current_indices.getSize();
+  current_indices.setSize(index_offset + indices.getSize());
+  for(size_t i = 0; i < indices.getSize(); i++)
+      current_indices[index_offset+i] = indices[i] + vertex_offset;
+  current_cells[0].fLength = current_verts.getSize();
   span->addVerts(group, current_verts);
   span->addIndices(group, current_indices);
   span->addCells(group, current_cells);
@@ -139,7 +132,7 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   bounds.setMaxs(hsVector3(max_x, max_y, max_z));
   icicle.setLocalBounds(bounds);
   icicle.setWorldBounds(bounds);
-  //TODO: Material support
+  icicle.setGroupIdx(group);
   icicle.setMaterialIdx(0);
   icicle.setIBufferIdx(0);
   icicle.setVBufferIdx(0);
