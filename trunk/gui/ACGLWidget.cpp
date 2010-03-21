@@ -81,9 +81,9 @@ void ACGLWidget::paintGL()
   // Position the camera
   glTranslatef(cam_x, cam_y, cam_z);
 
-  for(int i = 0; i < current_age->layerCount(); i++)
-    for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
-      current_age->getLayer(i)->getObject(j)->draw();
+//   for(int i = 0; i < current_age->layerCount(); i++)
+//     for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
+//       current_age->getLayer(i)->getObject(j)->draw();
 }
 
 void ACGLWidget::keyPressEvent(QKeyEvent *event)

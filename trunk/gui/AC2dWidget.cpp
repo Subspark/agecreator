@@ -82,9 +82,9 @@ void AC2dWidget::paintGL()
     return;
 
   glColor3f(1.0f, 1.0f, 1.0f);
-  for(int i = 0; i < current_age->layerCount(); i++)
-    for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
-      current_age->getLayer(i)->getObject(j)->draw();
+//    for(int i = 0; i < current_age->layerCount(); i++)
+//      for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
+//        current_age->getLayer(i)->getObject(j)->draw();
 }
 
 void AC2dWidget::contextMenuEvent(QContextMenuEvent* event)
