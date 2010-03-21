@@ -32,6 +32,7 @@ ACPage::ACPage(const QString &name, int page, ACAge *age)
   plLocation l;
   l.setPageNum(page);
   l.setSeqPrefix(age->sequencePrefix());
+  l.setVer(pvUniversal);
   info->setAge(toPlasma(age->name()));
   info->setPage(toPlasma(name));
   info->setLocation(l);
