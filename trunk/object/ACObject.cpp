@@ -75,7 +75,7 @@ void ACObject::contextMenu(QContextMenuEvent *event)
   menu->exec(event->globalPos());
 }
 
-void ACObject::draw() const
+void ACObject::draw(DrawMode /*draw*/) const
 {}
 
 QIcon ACObject::icon() const

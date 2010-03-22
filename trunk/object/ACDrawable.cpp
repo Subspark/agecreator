@@ -209,7 +209,7 @@ bool ACDrawable::loadFromFile(const QString &filename)
   return true;
 }
 
-void ACDrawable::draw() const
+void ACDrawable::draw(DrawMode draw) const
 {
   if(drawi->getNumDrawables() == 0)
     return;

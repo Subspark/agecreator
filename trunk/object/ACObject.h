@@ -38,6 +38,11 @@ class ACObject : public QObject
   Q_OBJECT
   Q_PROPERTY(QString name READ name WRITE setName)
 public:
+  enum DrawMode {
+    Draw3D,
+    Draw2D
+  };
+  
   ACObject(const QString& name);
   ACObject(plKey key);
   virtual ~ACObject();
@@ -46,7 +51,7 @@ public:
   QString name() const;
 
   void contextMenu(QContextMenuEvent *event);
-  virtual void draw() const;
+  virtual void draw(DrawMode mode) const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);
