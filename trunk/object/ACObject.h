@@ -55,6 +55,8 @@ public slots:
   virtual void setName(const QString &);
 
 protected:
+  plLocation location() const;
+  
   QMenu *menu;
   plSceneObject *scene_object;
 };

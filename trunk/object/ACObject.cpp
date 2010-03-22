@@ -60,6 +60,11 @@ QString ACObject::name() const
   return toQt(scene_object->getKey()->getName());
 }
 
+plLocation ACObject::location() const
+{
+  return scene_object->getKey()->getLocation();
+}
+
 void ACObject::setName(const QString &name)
 {
   scene_object->getKey()->setName(toPlasma(name));
