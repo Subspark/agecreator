@@ -28,6 +28,8 @@
 #include <ResManager/plResManager.h>
 #include <ResManager/plAgeInfo.h>
 #include <PRP/KeyedObject/plLocation.h>
+#include <PRP/Surface/hsGMaterial.h>
+#include <PRP/Surface/plLayer.h>
 #include <PRP/plPageInfo.h>
 #include <PRP/plSceneNode.h>
 #include <Stream/plEncryptedStream.h>
@@ -235,6 +237,38 @@ PlasmaVer ACAge::plasmaVersion() const
   return manager->getVer();
 }
 
+plKey ACAge::defaultMaterial()
+{
+  plLocation texture_page;
+  texture_page.setSeqPrefix(sequencePrefix());
+  texture_page.setPageNum(-1);
+  std::vector<plKey> keys = manager->getKeys(texture_page, kGMaterial);
+  plKey material_key;
+  for(size_t i = 0; i < keys.size(); i++)
+    if(keys[i]->getName() == plString("DEFAULT")) {
+      material_key = keys[i];
+      break;
+    }
+  if(! material_key.Exists()) {
+    hsGMaterial *mat = new hsGMaterial;
+    mat->init(plString("DEFAULT"));
+    manager->AddObject(texture_page, mat);
+    plLayer *l = new plLayer;
+    l->init(plString("DEFAULT_layer0"));
+    manager->AddObject(texture_page, l);
+    l->setAmbient(hsColorRGBA());
+    l->setPreshade(hsColorRGBA(1.0f, 1.0f, 1.0f));
+    l->setRuntime(hsColorRGBA(1.0f, 1.0f, 1.0f));
+    l->setSpecular(hsColorRGBA(1.0f, 1.0f, 1.0f));
+    l->getState().fShadeFlags = hsGMatState::kShadeSpecular | hsGMatState::kShadeSpecularAlpha | hsGMatState::kShadeSpecularColor
+                              | hsGMatState::kShadeSpecularHighlight;
+    l->setLODBias(-1);
+    mat->addLayer(l->getKey());
+    material_key = mat->getKey();
+  }
+  return material_key;
+}
+
 bool ACAge::isDirty() const
 {
   if(dirty)
@@ -344,7 +378,7 @@ void ACAge::addObject(int object_type)
       ok = true;
     id++;
   }
-  ACObject *new_object;
+  ACObject *new_object = 0;
   switch(object_type) {
     case idSpawnPoint: {
       new_object = new ACSpawnPoint(name);
@@ -360,6 +394,7 @@ void ACAge::addObject(int object_type)
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
         return;
       }
+      qobject_cast<ACPhysicalDrawable*>(new_object)->setMaterial(defaultMaterial());
       break;
     }
     case idDrawable: {
@@ -372,6 +407,7 @@ void ACAge::addObject(int object_type)
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
         return;
       }
+      qobject_cast<ACDrawable*>(new_object)->setMaterial(defaultMaterial());
       break;
     }
     default:

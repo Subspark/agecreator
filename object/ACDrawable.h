@@ -21,7 +21,6 @@
 #define ACDRAWABLE_H
 
 #include "ACObject.h"
-#include "ACMaterial.h"
 
 #include <QMap>
 #include <QPair>
@@ -43,6 +42,7 @@ public:
   plDrawableSpans *getSpan(unsigned int render_level, unsigned int criteria);
   size_t getGroupId(plDrawableSpans *span, unsigned char format);
   void meshRemoved(int id, unsigned char format);
+  int getMaterialId(plDrawableSpans *span, plKey mat);
   
 signals:
   void idUpdated(int, unsigned char format);
@@ -60,6 +60,8 @@ public:
   ACDrawable(const QString &name);
   ACDrawable(plKey key);
   virtual ~ACDrawable();
+
+  void setMaterial(plKey mat);
   
   void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt);
   bool loadFromFile(const QString &filename);
@@ -76,6 +78,7 @@ signals:
   void meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*);
 
 protected:
+  plKey material;
   plDrawInterface *drawi;
   unsigned char format;
   QSharedPointer<ACDrawableSpans> spans;
