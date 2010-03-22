@@ -19,6 +19,7 @@
 
 #include "ACDrawable.h"
 #include "ACLayer.h"
+#include "ACMaterialEditor.h"
 #include "ACUtil.h"
 
 #include <PRP/Geometry/plDrawableSpans.h>
@@ -34,6 +35,7 @@
 
 #include <QFile>
 #include <QMenu>
+#include <QPointer>
 
 #include <GL/gl.h>
 
@@ -50,8 +52,10 @@ ACDrawable::ACDrawable(const QString &name)
   manager->AddObject(virtual_loc, drawi);
   scene_object->setDrawInterface(drawi->getKey());
   
-  menu->addAction(tr("Mesh Properties"));
-  menu->addAction(tr("Material Properties"));
+  QAction * action;
+  action = menu->addAction(tr("Mesh Properties"));
+  action = menu->addAction(tr("Material Properties"));
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(editMaterial()));
 }
 
 ACDrawable::ACDrawable(plKey key)
@@ -295,6 +299,15 @@ void ACDrawable::idUpdated(int id, unsigned char fmt)
     drawi->delDrawable(0);
     drawi->addDrawable(key, key_id);
   }
+}
+
+void ACDrawable::editMaterial()
+{
+  QPointer<ACMaterialEditor> editor = new ACMaterialEditor(material);
+  editor->exec();
+  plKey new_mat = editor->selectedMaterial();
+  if(new_mat != material)
+    setMaterial(new_mat);
 }
 
 ACDrawableSpans::ACDrawableSpans()

@@ -91,6 +91,7 @@ protected:
 
 private slots:
   void idUpdated(int id, unsigned char fmt);
+  void editMaterial();
 };
 
 #endif // ACDRAWABLE_H

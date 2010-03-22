@@ -33,6 +33,7 @@ set(AC_SRCS
     gui/ACExportDialog.cpp
     gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
+    gui/ACMaterialEditor.cpp
     gui/ACObjectNameDelegate.cpp
     object/ACDrawable.cpp
     object/ACObject.cpp
@@ -51,6 +52,7 @@ set(AC_HDRS
     gui/ACExportDialog.h
     gui/ACGLWidget.h
     gui/ACMainWindow.h
+    gui/ACMaterialEditor.h
     gui/ACObjectNameDelegate.h
     object/ACDrawable.h
     object/ACObject.h
@@ -61,6 +63,7 @@ set(AC_HDRS
 set(AC_UIS
     gui/ACExportDialog.ui
     gui/ACMainWindow.ui
+    gui/ACMaterialEditor.ui
 )
 
 QT4_WRAP_UI(AC_UI_HDRS ${AC_UIS})
