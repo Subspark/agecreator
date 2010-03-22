@@ -22,7 +22,9 @@
 
 #include <PRP/KeyedObject/plLocation.h>
 #include <Util/plString.h>
+#include <Sys/hsColor.h>
 #include <QString>
+#include <QColor>
 
 #define ascii(str) QString::fromAscii(str)
 
@@ -47,6 +49,26 @@ inline plString toPlasma(const QString &qs)
 inline QString toQt(const plString &ps)
 {
   return QString::fromAscii(ps.cstr());
+}
+
+inline hsColorRGBA toPlasma(const QColor &qc)
+{
+  hsColorRGBA pc;
+  pc.r = qc.redF();
+  pc.g = qc.greenF();
+  pc.b = qc.blueF();
+  pc.a = qc.alphaF();
+  return pc;
+}
+
+inline QColor toQt(const hsColorRGBA &pc)
+{
+  QColor qc;
+  qc.setRedF(pc.r);
+  qc.setGreenF(pc.g);
+  qc.setBlueF(pc.b);
+  qc.setAlphaF(pc.a);
+  return qc;
 }
 
 #endif
