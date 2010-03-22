@@ -71,6 +71,15 @@ ACDrawable::ACDrawable::~ACDrawable()
   manager->DelObject(drawi->getKey());
 }
 
+void ACDrawable::setMaterial(plKey mat)
+{
+  material = mat;
+  if(drawi->getNumDrawables()) {
+    plDrawableSpans *span = spans->getSpan(0, 0);
+    span->getSpan(drawi->getDrawableKey(0))->setMaterialIdx(spans->getMaterialId(span, mat));
+  }
+}
+
 void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt)
 {
   plDrawableSpans *span = spans->getSpan(0, 0);
@@ -134,7 +143,6 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   icicle.setWorldBounds(bounds);
   icicle.setGroupIdx(group);
   icicle.setMaterialIdx(0);
-  icicle.setIBufferIdx(0);
   icicle.setVBufferIdx(0);
   icicle.setCellIdx(0);
   icicle.setCellOffset(vertex_offset);
@@ -144,15 +152,12 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   icicle.setVLength(verts.getSize());
   icicle.setMinDist(-1.0f);
   icicle.setMaxDist(-1.0f);
+  icicle.setMaterialIdx(spans->getMaterialId(span, material));
   size_t id = span->addIcicle(icicle);
   plDISpanIndex di_index;
   di_index.fIndices.append(id);
   span->addDIIndex(di_index);
   drawi->addDrawable(span->getKey(), id);
-  
-  ACMaterial *mat = new ACMaterial(name());
-  mat->setLocation(span->getKey()->getLocation());
-  span->addMaterial(mat->key());
   
   emit meshDataUpdated(verts.getSize(), &(verts[0]), indices.getSize(), &(indices[0]));
 }
@@ -345,6 +350,20 @@ size_t ACDrawableSpans::getGroupId(plDrawableSpans *span, unsigned char format)
     group_ids.insert(key, id);
   }
   return group_ids.value(key);
+}
+
+int ACDrawableSpans::getMaterialId(plDrawableSpans *span, plKey mat)
+{
+  if(!mat.Exists())
+    return -1;
+  size_t mat_count = span->getNumMaterials();
+  size_t i;
+  for(i = 0; i < mat_count; i++)
+    if(span->getMaterial(i) == mat)
+      break;
+  if(i == mat_count)
+    span->addMaterial(mat);
+  return i;
 }
 
 void ACDrawableSpans::meshRemoved(int id, unsigned char format)

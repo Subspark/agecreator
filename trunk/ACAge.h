@@ -62,6 +62,7 @@ public:
   QString name() const;
   int sequencePrefix() const;
   PlasmaVer plasmaVersion() const;
+  plKey defaultMaterial();
 
   // All the remaining plAgeInfo and plResManager properties need to be here somehow
 

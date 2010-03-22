@@ -34,8 +34,6 @@ set(AC_SRCS
     gui/ACGLWidget.cpp
     gui/ACMainWindow.cpp
     gui/ACObjectNameDelegate.cpp
-    material/ACMaterial.cpp
-    material/ACTexture.cpp
     object/ACDrawable.cpp
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
@@ -54,8 +52,6 @@ set(AC_HDRS
     gui/ACGLWidget.h
     gui/ACMainWindow.h
     gui/ACObjectNameDelegate.h
-    material/ACMaterial.h
-    material/ACTexture.h
     object/ACDrawable.h
     object/ACObject.h
     object/ACPhysicalDrawable.h
