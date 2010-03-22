@@ -30,6 +30,8 @@
 #include <QSignalMapper>
 #include <qmessagebox.h>
 
+#include <ResManager/plResManager.h>
+
 static const char *age_file_type = QT_TR_NOOP("Age Files (*.age)");
 
 static const char *ac_license = QT_TR_NOOP(
@@ -154,8 +156,12 @@ void ACMainWindow::exportAge()
   QPointer<ACExportDialog> dialog = new ACExportDialog(this);
   if(dialog->exec() == QDialog::Rejected)
     return;
+  PlasmaVer current_ver = manager->getVer();
+  manager->setVer(dialog->plasmaVersion(), true);
   current_age->setPlasmaVersion(dialog->plasmaVersion());
   current_age->exportAge(dialog->exportPath());
+  manager->setVer(current_ver);
+  current_age->setPlasmaVersion(current_ver);
 }
 
 void ACMainWindow::setupAgeGui()
