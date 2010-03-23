@@ -50,7 +50,7 @@ static const char *ac_license = QT_TR_NOOP(
 "GNU General Public License for more details.<br>"
 "<br>"
 "You should have received a copy of the GNU General Public License"
-"along with this program.  If not, see <http://www.gnu.org/licenses/></html>");
+"along with this program.  If not, see < a href=http://www.gnu.org/licenses/>http://www.gnu.org/licenses/</a></html>");
 
 static const char *hsplasma_license = QT_TR_NOOP(
 "<html>libHSPlasma: Open-source library for Plasma data types<br>"
@@ -68,7 +68,12 @@ static const char *hsplasma_license = QT_TR_NOOP(
 "GNU General Public License for more details.<br>"
 "<br>"
 "You should have received a copy of the GNU General Public License"
-"along with this program.  If not, see <http://www.gnu.org/licenses/></html>");
+"along with this program.  If not, see < a href=http://www.gnu.org/licenses/>http://www.gnu.org/licenses/</a></html>");
+
+static const char *hector_credits = QT_TR_NOOP(
+"<html>Hector was created by Aloys of the Guild of Writers<br>"
+"<br>"
+"Used with permission</html>");
 
 ACMainWindow::ACMainWindow()
   : current_age(NULL)
@@ -88,6 +93,7 @@ ACMainWindow::ACMainWindow()
   ui.actionAboutAgeCreator->setIcon(ACIcon("help-about"));
   ui.actionAboutHSPlasma->setIcon(ACIcon("help-about"));
   ui.actionAboutQt->setIcon(ACIcon("help-about"));
+  ui.actionAboutHector->setIcon(ACIcon("help-about"));
   
   ui.buttonAddObject->setIcon(ACIcon("list-add"));
   ui.buttonDelObject->setIcon(ACIcon("list-remove"));
@@ -111,6 +117,11 @@ void ACMainWindow::about()
 void ACMainWindow::aboutHSPlasma()
 {
   QMessageBox::about(this, tr("About libHSPlasma"), tr(hsplasma_license));
+}
+
+void ACMainWindow::aboutHector()
+{
+  QMessageBox::about(this, tr("About Hector"), tr(hector_credits));
 }
 
 void ACMainWindow::aboutQt()
