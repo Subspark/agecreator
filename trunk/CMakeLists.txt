@@ -66,12 +66,20 @@ set(AC_UIS
     gui/ACMaterialEditor.ui
 )
 
-QT4_WRAP_UI(AC_UI_HDRS ${AC_UIS})
-qt4_wrap_cpp(AC_MOC_SRCS ${AC_HDRS})
+set(AC_RCS
+    data.qrc
+)
 
 if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  qt4_add_resources(AC_QRC_SRCS icons.qrc)
+  set(AC_RCS
+      ${AC_RCS}
+      icons.qrc
+  )
 endif(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+
+QT4_WRAP_UI(AC_UI_HDRS ${AC_UIS})
+qt4_wrap_cpp(AC_MOC_SRCS ${AC_HDRS})
+qt4_add_resources(AC_QRC_SRCS ${AC_RCS})
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}
