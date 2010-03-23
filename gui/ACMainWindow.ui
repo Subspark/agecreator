@@ -58,6 +58,7 @@
     </property>
     <addaction name="actionAboutAgeCreator"/>
     <addaction name="actionAboutHSPlasma"/>
+    <addaction name="actionAboutHector"/>
     <addaction name="actionAboutQt"/>
    </widget>
    <addaction name="menuFile"/>
@@ -238,6 +239,11 @@
   <action name="actionAboutQt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAboutHector">
+   <property name="text">
+    <string>About Hector</string>
    </property>
   </action>
  </widget>
@@ -454,6 +460,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAboutHector</sender>
+   <signal>triggered()</signal>
+   <receiver>ACMainWindow</receiver>
+   <slot>aboutHector()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newAge()</slot>
@@ -463,5 +485,6 @@
   <slot>about()</slot>
   <slot>aboutQt()</slot>
   <slot>aboutHSPlasma()</slot>
+  <slot>aboutHector()</slot>
  </slots>
 </ui>
