@@ -213,6 +213,15 @@ void ACDrawable::draw(DrawMode draw) const
 {
   if(drawi->getNumDrawables() == 0)
     return;
+  // Only do material setup for 3D preview
+  if(draw == Draw3D && material.Exists()) {
+    hsGMaterial *mat = static_cast<hsGMaterial*>(material->getObj());
+    plLayer *layer = static_cast<plLayer*>(mat->getLayer(0)->getObj());
+    hsColorRGBA color = layer->getPreshade();
+    glColor4f(color.r, color.g, color.b, color.a);
+  } else if(draw == Draw3D) {
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  }
   size_t draw_key = drawi->getDrawableKey(0);
   plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
   plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(draw_key));
