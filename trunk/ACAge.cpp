@@ -70,11 +70,6 @@ ACAge::ACAge(const QString& name)
   age = new plAgeInfo;
   age->setAgeName(toPlasma(name));
   manager->AddAge(age);
-  // An Age created in-memory is always dirty
-  textures = new ACPage(ascii("Textures"), -1, this);
-  builtins = new ACPage(ascii("BuiltIn"), -2, this);
-  addLayer(ascii("mainRoom"));
-  layers[0]->addObject(new ACSpawnPoint(ascii("LinkInPointDefault")));
   // a "NULL" page, where objects that have been created but not yet assigned a page are stored
   plPageInfo *info = new plPageInfo;
   info->setLocation(virtual_loc);
@@ -82,6 +77,11 @@ ACAge::ACAge(const QString& name)
   plSceneNode *null_node = new plSceneNode;
   null_node->init(toPlasma(name));
   manager->AddObject(virtual_loc, null_node);
+  // An Age created in-memory is always dirty
+  textures = new ACPage(ascii("Textures"), -1, this);
+  builtins = new ACPage(ascii("BuiltIn"), -2, this);
+  addLayer(ascii("mainRoom"));
+  layers[0]->addObject(new ACSpawnPoint(ascii("LinkInPointDefault")));
   dirty = true;
 }
 
@@ -89,6 +89,13 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   : QAbstractItemModel(parent)
 {
   age = manager->ReadAge(filename.toLocal8Bit().constData(), true);
+  // a "NULL" page, where objects that have been created but not yet assinged a page are stored
+  plPageInfo *info = new plPageInfo;
+  info->setLocation(virtual_loc);
+  manager->AddPage(info);
+  plSceneNode *null_node = new plSceneNode;
+  null_node->init(toPlasma(name()));
+  manager->AddObject(virtual_loc, null_node);
   size_t num_pages = age->getNumPages();
   beginInsertRows(QModelIndex(), 0, num_pages-1);
   for(size_t i = 0; i < num_pages; i++) {
@@ -108,13 +115,6 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   QString builtins_name = filepath.absoluteFilePath(name()+district+ascii("_BuiltIn.prp"));
   textures = new ACPage(manager->ReadPage(toPlasma(textures_name))->getLocation(), this);
   builtins = new ACPage(manager->ReadPage(toPlasma(builtins_name))->getLocation(), this);
-  // a "NULL" page, where objects that have been created but not yet assinged a page are stored
-  plPageInfo *info = new plPageInfo;
-  info->setLocation(virtual_loc);
-  manager->AddPage(info);
-  plSceneNode *null_node = new plSceneNode;
-  null_node->init(toPlasma(name()));
-  manager->AddObject(virtual_loc, null_node);
   dirty = false;
 }
 
