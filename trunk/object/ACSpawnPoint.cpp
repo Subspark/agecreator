@@ -51,6 +51,9 @@ ACSpawnPoint::ACSpawnPoint(plKey key)
   // TODO: make this more robust to allow spawn points with other modifiers
   spawn = static_cast<plSpawnModifier*>(scene_object->getModifier(0)->getObj());
   coord = static_cast<plCoordinateInterface*>(scene_object->getCoordInterface()->getObj());
+
+  hector = new ACDrawable(ascii("hector"));
+  hector->loadFromFile(ascii(":/data/hector.obj"));
 }
 
 ACSpawnPoint::~ACSpawnPoint()
