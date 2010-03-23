@@ -81,7 +81,7 @@ void AC2dWidget::paintGL()
   if(!current_age)
     return;
 
-  glColor3f(1.0f, 1.0f, 1.0f);
+  qglColor(palette().color(QPalette::Text));
   for(int i = 0; i < current_age->layerCount(); i++)
     for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
       current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw2D);
