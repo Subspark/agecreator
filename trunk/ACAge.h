@@ -31,6 +31,7 @@ class plAgeInfo;
 class plPageInfo;
 class plResManager;
 
+class QGLContext;
 class QItemSelectionModel;
 
 class ACAge : public QAbstractItemModel
@@ -56,6 +57,7 @@ public:
   ACLayer *getLayer(int) const;
   ACLayer *getLayer(const QString&) const;
   void updatePageName(int id, const QString &new_name);
+  void loadTextures(QGLContext *context);
   
   void exportAge(const QString&);
 
