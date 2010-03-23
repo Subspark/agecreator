@@ -253,7 +253,7 @@ void ACDrawable::clearMeshData()
 {
   if(drawi->getNumDrawables()) {
     //TODO: backup all mesh data for the current format, and re-insert all data but the one for this mesh
-    spans->meshRemoved(drawi->getDrawableKey(0), format);
+    //spans->meshRemoved(drawi->getDrawableKey(0), format);
     drawi->delDrawable(0);
   }
   return;
