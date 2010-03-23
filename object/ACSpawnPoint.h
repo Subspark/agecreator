@@ -25,6 +25,8 @@
 class plCoordinateInterface;
 class plSpawnModifier;
 
+class ACDrawable;
+
 class ACSpawnPoint : public ACObject
 {
   Q_OBJECT
@@ -34,6 +36,7 @@ public:
   virtual ~ACSpawnPoint();
 
   virtual QIcon icon() const;
+  virtual void draw(DrawMode mode) const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);
 
@@ -43,6 +46,7 @@ public slots:
 private:
   plSpawnModifier *spawn;
   plCoordinateInterface *coord;
+  ACDrawable *hector;
 };
 
 #endif // ACSPAWNPOINT_H

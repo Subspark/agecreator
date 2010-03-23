@@ -18,12 +18,15 @@
 */
 
 #include "ACSpawnPoint.h"
+#include "ACDrawable.h"
 #include "ACPage.h"
 #include "ACUtil.h"
 
 #include <PRP/Modifier/plSpawnModifier.h>
 #include <PRP/Object/plCoordinateInterface.h>
 #include <PRP/Object/plSceneObject.h>
+
+#include <GL/gl.h>
 
 ACSpawnPoint::ACSpawnPoint(const QString& name)
   : ACObject(name)
@@ -37,6 +40,9 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
   scene_object->setCoordInterface(coord->getKey());
   coord->setOwner(scene_object->getKey());
   scene_object->addModifier(spawn->getKey());
+  
+  hector = new ACDrawable(ascii("hector"));
+  hector->loadFromFile(ascii(":/data/hector.obj"));
 }
 
 ACSpawnPoint::ACSpawnPoint(plKey key)
@@ -56,6 +62,19 @@ ACSpawnPoint::~ACSpawnPoint()
 QIcon ACSpawnPoint::icon() const
 {
   return ACIcon("list-add-user");
+}
+
+void ACSpawnPoint::draw(DrawMode mode) const
+{
+  GLboolean current_cull;
+  glGetBooleanv(GL_CULL_FACE, &current_cull);
+  if(current_cull) {
+    glDisable(GL_CULL_FACE);
+    hector->draw(mode);
+    glEnable(GL_CULL_FACE);
+  } else {
+    hector->draw(mode);
+  }
 }
 
 void ACSpawnPoint::registerWithPage(ACPage *page)
