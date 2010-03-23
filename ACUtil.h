@@ -20,11 +20,13 @@
 #ifndef ACUTIL_H
 #define ACUTIL_H
 
+#include <PRP/KeyedObject/plKey.h>
 #include <PRP/KeyedObject/plLocation.h>
 #include <Util/plString.h>
 #include <Sys/hsColor.h>
 #include <QString>
 #include <QColor>
+#include <QMap>
 
 #define ascii(str) QString::fromAscii(str)
 
@@ -38,6 +40,7 @@
 class plResManager;
 extern plResManager *manager;
 extern plLocation virtual_loc;
+extern QMap<plKey, unsigned int> texture_ids;
 
 inline plString toPlasma(const QString &qs)
 {
