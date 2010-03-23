@@ -193,7 +193,7 @@ void ACMainWindow::setupAgeGui()
   ui.sceneTreeView->setModel(current_age);
   connect(ui.sceneTreeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(currentObjectChanged(QModelIndex)));
   current_age->setSelectionModel(ui.sceneTreeView->selectionModel());
-  current_age->loadTextures(const_cast<QGLContext*>(ui.preview3d->context()));
+//current_age->loadTextures(const_cast<QGLContext*>(ui.preview3d->context()));
   ui.preview3d->setAge(current_age);
   ui.mainView->setAge(current_age);
   setWindowTitle(tr("Age Creator - %1").arg(current_age->name()));
