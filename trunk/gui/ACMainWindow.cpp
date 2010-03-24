@@ -79,6 +79,9 @@ ACMainWindow::ACMainWindow()
   : current_age(NULL)
 {
   ui.setupUi(this);
+#if QT_VERSION < 0x040601
+  setCentralWidget(ui.mainView)
+#endif
   ui.actionFileNew->setIcon(ACIcon("document-new"));
   ui.actionFileOpen->setIcon(ACIcon("document-open"));
   ui.actionFileSave->setIcon(ACIcon("document-save"));
