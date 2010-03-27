@@ -41,8 +41,10 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
   coord->setOwner(scene_object->getKey());
   scene_object->addModifier(spawn->getKey());
   
-  hector = new ACDrawable(ascii("hector"));
+  hector = new ACDrawable(ascii("hector_")+name);
   hector->loadFromFile(ascii(":/data/hector.obj"));
+  plSceneObject *obj = static_cast<plSceneObject*>(hector->key()->getObj());
+  obj->setCoordInterface(coord->getKey());
 }
 
 ACSpawnPoint::ACSpawnPoint(plKey key)
@@ -52,8 +54,10 @@ ACSpawnPoint::ACSpawnPoint(plKey key)
   spawn = static_cast<plSpawnModifier*>(scene_object->getModifier(0)->getObj());
   coord = static_cast<plCoordinateInterface*>(scene_object->getCoordInterface()->getObj());
 
-  hector = new ACDrawable(ascii("hector"));
+  hector = new ACDrawable(ascii("hector_")+name());
   hector->loadFromFile(ascii(":/data/hector.obj"));
+  plSceneObject *obj = static_cast<plSceneObject*>(hector->key()->getObj());
+  obj->setCoordInterface(coord->getKey());
 }
 
 ACSpawnPoint::~ACSpawnPoint()
@@ -71,16 +75,6 @@ void ACSpawnPoint::draw(DrawMode mode) const
 {
   GLboolean current_cull;
   glGetBooleanv(GL_CULL_FACE, &current_cull);
-  glPushMatrix();
-  hsMatrix44 mat = coord->getWorldToLocal();
-  mat.rotate(hsMatrix44::kView, 3.14159);
-  mat.rotate(hsMatrix44::kUp, 3.14159);
-  float glmat[16];
-  memcpy(glmat, mat.glMatrix(), sizeof(float)*16);
-  float z = glmat[13];
-  glmat[13] = -1.0f * glmat[14];
-  glmat[14] = z;
-  glMultMatrixf(glmat);
   if(current_cull) {
     glDisable(GL_CULL_FACE);
     hector->draw(mode);
@@ -88,7 +82,6 @@ void ACSpawnPoint::draw(DrawMode mode) const
   } else {
     hector->draw(mode);
   }
-  glPopMatrix();
 }
 
 void ACSpawnPoint::registerWithPage(ACPage *page)

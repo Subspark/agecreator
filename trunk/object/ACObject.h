@@ -49,6 +49,8 @@ public:
 
   ACPage *page() const;
   QString name() const;
+  
+  plKey key() const;
 
   void contextMenu(QContextMenuEvent *event);
   virtual void draw(DrawMode mode) const;
