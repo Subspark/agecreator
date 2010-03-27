@@ -30,12 +30,14 @@
 #include <PRP/KeyedObject/plLocation.h>
 #include <PRP/Surface/hsGMaterial.h>
 #include <PRP/Surface/plLayer.h>
+#include <PRP/Surface/plMipmap.h>
 #include <PRP/plPageInfo.h>
 #include <PRP/plSceneNode.h>
 #include <Stream/plEncryptedStream.h>
 
 #include <QDir>
 #include <QFileDialog>
+#include <QGLWidget>
 #include <QIcon>
 #include <QInputDialog>
 #include <QItemSelectionModel>
@@ -43,6 +45,10 @@
 #include <QPointer>
 #include <QRegExpValidator>
 #include <QStringList>
+
+#define COMPRESSED_RGBA_S3TC_DXT1_EXT 0x83F1
+#define COMPRESSED_RGBA_S3TC_DXT3_EXT 0x83F2
+#define COMPRESSED_RGBA_S3TC_DXT5_EXT 0x83F3
 
 //TODO: Generate this from actual user fog settings
 const char *fni_string=
@@ -442,6 +448,82 @@ void ACAge::updatePageName(int id, const QString& new_name)
   age->clearPages();
   for(size_t i = 0; i < temp_pages.getSize(); i++)
     age->addPage(temp_pages[i]);
+}
+
+void ACAge::loadTextures(QGLContext *context)
+{
+  context->makeCurrent();
+  plLocation texture_page;
+  texture_page.setSeqPrefix(sequencePrefix());
+  texture_page.setPageNum(-1);
+  std::vector<plKey> textures = manager->getKeys(texture_page, kMipmap);
+  GLuint *texids = new GLuint[textures.size()];
+  glGenTextures(textures.size(), texids);
+  for(unsigned int i = 0; i < textures.size(); i++) {
+    glBindTexture(GL_TEXTURE_2D, texids[i]);
+    plMipmap *mip = static_cast<plMipmap*>(textures[i]->getObj());
+    texture_ids.insert(textures[i], texids[i]);
+    glBindTexture(GL_TEXTURE_2D, texids[i]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+    switch(mip->getCompressionType()) {
+      case plBitmap::kJPEGCompression: {
+        char *data = new char[mip->GetUncompressedSize(0)];
+        mip->DecompressImage(0, data, mip->GetUncompressedSize(0));
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mip->getLevelWidth(0), mip->getLevelHeight(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        break;
+      }
+      case plBitmap::kUncompressed: {
+        GLenum data_type = GL_UNSIGNED_BYTE;
+        GLenum data_format = GL_RGBA;
+        switch(mip->getARGBType()) {
+          case plBitmap::kRGB4444:
+            data_type = GL_UNSIGNED_SHORT_4_4_4_4;
+            break;
+          case plBitmap::kRGB1555:
+            data_type = GL_UNSIGNED_SHORT_5_5_5_1;
+            break;
+          case plBitmap::kInten8:
+            data_format = GL_LUMINANCE;
+            break;
+          case plBitmap::kAInten88:
+            data_format = GL_LUMINANCE_ALPHA;
+            break;
+          default:
+            break;
+        }
+        glTexImage2D(GL_TEXTURE_2D, 0, data_format, mip->getLevelWidth(0), mip->getLevelHeight(0), 0, data_format, data_type, mip->getLevelData(0));
+        break;
+      }
+      case plBitmap::kDirectXCompression: {
+        GLenum dx_compression;
+        switch(mip->getDXCompression()) {
+          case plBitmap::kDXT1:
+          case plBitmap::kDXT2:
+            dx_compression = COMPRESSED_RGBA_S3TC_DXT1_EXT;
+            break;
+          case plBitmap::kDXT3:
+          case plBitmap::kDXT4:
+            dx_compression = COMPRESSED_RGBA_S3TC_DXT3_EXT;
+            break;
+          case plBitmap::kDXT5:
+            dx_compression = COMPRESSED_RGBA_S3TC_DXT5_EXT;
+            break;
+          default:
+            break;
+        }
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, dx_compression, mip->getLevelWidth(0), mip->getLevelHeight(0), 0, mip->getLevelSize(0), mip->getLevelData(0));
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  glBindTexture(GL_TEXTURE_2D, 0);
+  delete[] texids;
+  context->doneCurrent();
 }
 
 void ACAge::exportAge(const QString &path)

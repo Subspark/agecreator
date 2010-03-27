@@ -54,8 +54,6 @@ void ACGLWidget::initializeGL()
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 void ACGLWidget::resizeGL(int w, int h)
@@ -85,6 +83,10 @@ void ACGLWidget::paintGL()
 
   // Position the camera
   glTranslatef(cam_x, cam_y, cam_z);
+  
+  // update all the world transform matrices. This should theoeretically be done only when stuff changes, but for now this is fine
+  // TODO: Move this code someplace reasonable
+  
 
   for(int i = 0; i < current_age->layerCount(); i++)
     for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
