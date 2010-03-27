@@ -217,55 +217,54 @@ bool ACDrawable::loadFromFile(const QString &filename)
 void ACDrawable::draw(DrawMode draw) const
 {
   unsigned int uvw_id;
-  if(drawi->getNumDrawables() == 0)
-    return;
-  // Only do material setup for 3D preview
-  if(draw == Draw3D && material.Exists()) {
-    hsGMaterial *mat = static_cast<hsGMaterial*>(material->getObj());
-    plLayer *layer = static_cast<plLayer*>(mat->getLayer(0)->getObj());
-    unsigned int new_layer = 1;
-    while(!(layer->getTexture().Exists()) || layer->getTexture()->getType() != kMipmap) {
-      if(new_layer < mat->getNumLayers())
-        layer = static_cast<plLayer*>(mat->getLayer(new_layer)->getObj());
-      else
-        break;
-      new_layer++;
+  for(size_t draw_id = 0; draw_id < drawi->getNumDrawables(); draw_id++) {
+    // Only do material setup for 3D preview
+    plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(draw_id)->getObj());
+    plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(drawi->getDrawableKey(draw_id)));
+    if(draw == Draw3D && material.Exists()) {
+      hsGMaterial *mat = static_cast<hsGMaterial*>(span->getMaterial(icicle->getMaterialIdx())->getObj());
+      plLayer *layer = static_cast<plLayer*>(mat->getLayer(0)->getObj());
+      unsigned int new_layer = 1;
+      while(!(layer->getTexture().Exists()) || layer->getTexture()->getType() != kMipmap) {
+        if(new_layer < mat->getNumLayers())
+          layer = static_cast<plLayer*>(mat->getLayer(new_layer)->getObj());
+        else
+          break;
+        new_layer++;
+      }
+      while(layer->getUnderLay().Exists()) {
+        layer = static_cast<plLayer*>(layer->getUnderLay()->getObj());
+      }
+      hsColorRGBA color = layer->getRuntime();
+      glColor4f(color.r, color.g, color.b, color.a);
+      glEnable(GL_TEXTURE_2D);
+      if(layer->getTexture().Exists())
+        glBindTexture(GL_TEXTURE_2D, texture_ids.value(layer->getTexture(), 0));
+      uvw_id = layer->getUVWSrc();
+      glMatrixMode(GL_TEXTURE);
+        glLoadMatrixf(layer->getTransform().glMatrix());
+      glMatrixMode(GL_MODELVIEW);
+    } else if(draw == Draw3D) {
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
-    while(layer->getUnderLay().Exists()) {
-      layer = static_cast<plLayer*>(layer->getUnderLay()->getObj());
+    hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
+    hsTArray<unsigned short> indices = span->getIndices(icicle);
+    glPushMatrix();
+    glMultMatrixf(icicle->getLocalToWorld().glMatrix());
+    glBegin(GL_TRIANGLES);
+    for(size_t i = 0; i < indices.getSize(); i++) {
+      glNormal3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fNormal)));
+      if(uvw_id <= 9) {
+        hsVector3 uvw = verts[indices[i]].fUVWs[uvw_id];
+        glTexCoord3f(uvw.X, 0.0f - uvw.Y, uvw.Z);
+      } else {
+        glTexCoord3f(0.0f, 0.0f, 0.0f);
+      }
+      glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
     }
-    hsColorRGBA color = layer->getRuntime();
-    glColor4f(color.r, color.g, color.b, color.a);
-    glEnable(GL_TEXTURE_2D);
-    if(layer->getTexture().Exists())
-      glBindTexture(GL_TEXTURE_2D, texture_ids.value(layer->getTexture(), 0));
-    uvw_id = layer->getUVWSrc();
-    glMatrixMode(GL_TEXTURE);
-      glLoadMatrixf(layer->getTransform().glMatrix());
-    glMatrixMode(GL_MODELVIEW);
-  } else if(draw == Draw3D) {
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glEnd();
+    glPopMatrix();
   }
-  size_t draw_key = drawi->getDrawableKey(0);
-  plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
-  plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(draw_key));
-  hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
-  hsTArray<unsigned short> indices = span->getIndices(icicle);
-  glPushMatrix();
-  glMultMatrixf(icicle->getLocalToWorld().glMatrix());
-  glBegin(GL_TRIANGLES);
-  for(size_t i = 0; i < indices.getSize(); i++) {
-    glNormal3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fNormal)));
-    if(uvw_id <= 9) {
-      hsVector3 uvw = verts[indices[i]].fUVWs[uvw_id];
-      glTexCoord3f(uvw.X, 0.0f - uvw.Y, uvw.Z);
-    } else {
-      glTexCoord3f(0.0f, 0.0f, 0.0f);
-    }
-    glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
-  }
-  glEnd();
-  glPopMatrix();
 }
 
 QIcon ACDrawable::icon() const
