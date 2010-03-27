@@ -25,7 +25,7 @@
 #include <QAbstractItemModel>
 #include <QList>
 
-#include "Util/PlasmaVersions.h"
+#include <Util/PlasmaVersions.h>
 
 class plAgeInfo;
 class plPageInfo;
