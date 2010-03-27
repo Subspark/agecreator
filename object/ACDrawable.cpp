@@ -24,6 +24,7 @@
 
 #include <PRP/Geometry/plDrawableSpans.h>
 #include <PRP/Geometry/plGBufferGroup.h>
+#include <PRP/Object/plCoordinateInterface.h>
 #include <PRP/Object/plDrawInterface.h>
 #include <PRP/Object/plSceneObject.h>
 #include <PRP/plSceneNode.h>
@@ -38,6 +39,8 @@
 #include <QPointer>
 
 #include <GL/gl.h>
+
+#include <iostream>
 
 QMap<plLocation, QWeakPointer<ACDrawableSpans> > ACDrawable::weak_spans;
 
@@ -64,6 +67,8 @@ ACDrawable::ACDrawable(plKey key)
   spans = getSpans(key->getLocation());
   connect(spans.operator->(), SIGNAL(idUpdated(int, unsigned char)), this, SLOT(idUpdated(int, unsigned char)));
   drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
+  plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
+  material = span->getMaterial(span->getSpan(drawi->getDrawableKey(0))->getMaterialIdx());
   
   menu->addAction(tr("Mesh Properties"));
   menu->addAction(tr("Material Properties"));
@@ -79,7 +84,7 @@ void ACDrawable::setMaterial(plKey mat)
 {
   material = mat;
   if(drawi->getNumDrawables()) {
-    plDrawableSpans *span = spans->getSpan(0, 0);
+    plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
     span->getSpan(drawi->getDrawableKey(0))->setMaterialIdx(spans->getMaterialId(span, mat));
   }
 }
@@ -211,14 +216,33 @@ bool ACDrawable::loadFromFile(const QString &filename)
 
 void ACDrawable::draw(DrawMode draw) const
 {
+  unsigned int uvw_id;
   if(drawi->getNumDrawables() == 0)
     return;
   // Only do material setup for 3D preview
   if(draw == Draw3D && material.Exists()) {
     hsGMaterial *mat = static_cast<hsGMaterial*>(material->getObj());
     plLayer *layer = static_cast<plLayer*>(mat->getLayer(0)->getObj());
-    hsColorRGBA color = layer->getPreshade();
+    unsigned int new_layer = 1;
+    while(!(layer->getTexture().Exists()) || layer->getTexture()->getType() != kMipmap) {
+      if(new_layer < mat->getNumLayers())
+        layer = static_cast<plLayer*>(mat->getLayer(new_layer)->getObj());
+      else
+        break;
+      new_layer++;
+    }
+    while(layer->getUnderLay().Exists()) {
+      layer = static_cast<plLayer*>(layer->getUnderLay()->getObj());
+    }
+    hsColorRGBA color = layer->getRuntime();
     glColor4f(color.r, color.g, color.b, color.a);
+    glEnable(GL_TEXTURE_2D);
+    if(layer->getTexture().Exists())
+      glBindTexture(GL_TEXTURE_2D, texture_ids.value(layer->getTexture(), 0));
+    uvw_id = layer->getUVWSrc();
+    glMatrixMode(GL_TEXTURE);
+      glLoadMatrixf(layer->getTransform().glMatrix());
+    glMatrixMode(GL_MODELVIEW);
   } else if(draw == Draw3D) {
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   }
@@ -227,12 +251,21 @@ void ACDrawable::draw(DrawMode draw) const
   plIcicle* icicle = static_cast<plIcicle*>(span->getSpan(draw_key));
   hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
   hsTArray<unsigned short> indices = span->getIndices(icicle);
+  glPushMatrix();
+  glMultMatrixf(icicle->getLocalToWorld().glMatrix());
   glBegin(GL_TRIANGLES);
   for(size_t i = 0; i < indices.getSize(); i++) {
-    glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
     glNormal3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fNormal)));
+    if(uvw_id <= 9) {
+      hsVector3 uvw = verts[indices[i]].fUVWs[uvw_id];
+      glTexCoord3f(uvw.X, 0.0f - uvw.Y, uvw.Z);
+    } else {
+      glTexCoord3f(0.0f, 0.0f, 0.0f);
+    }
+    glVertex3fv(reinterpret_cast<GLfloat*>(&(verts[indices[i]].fPos)));
   }
   glEnd();
+  glPopMatrix();
 }
 
 QIcon ACDrawable::icon() const
@@ -275,6 +308,7 @@ void ACDrawable::moveMeshData(plLocation loc)
     spans = getSpans(loc);
     return;
   }
+  //TODO get the same pass index as our current span
   plDrawableSpans *span = spans->getSpan(0, 0);
   hsTArray<plGBufferVertex> verts = span->getVerts(static_cast<plIcicle*>(span->getSpan(drawi->getDrawableKey(0))));
   hsTArray<unsigned short> indices = span->getIndices(static_cast<plIcicle*>(span->getSpan(drawi->getDrawableKey(0))));

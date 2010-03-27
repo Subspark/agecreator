@@ -21,3 +21,4 @@
 
 plResManager *manager;
 plLocation virtual_loc;
+QMap<plKey, unsigned int> texture_ids;
