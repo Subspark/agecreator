@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
 <file>./data/hector.obj</file>
+<file>./data/plasma.vert</file>
 </qresource>
 </RCC>

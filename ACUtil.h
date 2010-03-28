@@ -38,9 +38,11 @@
 #endif
 
 class plResManager;
+struct GLEWContextStruct;
 extern plResManager *manager;
 extern plLocation virtual_loc;
 extern QMap<plKey, unsigned int> texture_ids;
+extern void* current_glew_context;
 
 inline plString toPlasma(const QString &qs)
 {
@@ -72,6 +74,10 @@ inline QColor toQt(const hsColorRGBA &pc)
   qc.setBlueF(pc.b);
   qc.setAlphaF(pc.a);
   return qc;
+}
+
+inline GLEWContextStruct *glewGetContext() {
+  return static_cast<GLEWContextStruct*>(current_glew_context);
 }
 
 #endif

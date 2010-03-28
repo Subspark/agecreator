@@ -38,7 +38,7 @@
 #include <QMenu>
 #include <QPointer>
 
-#include <GL/gl.h>
+#include "glew.h"
 
 #include <iostream>
 
@@ -214,9 +214,15 @@ bool ACDrawable::loadFromFile(const QString &filename)
   return true;
 }
 
-void ACDrawable::draw(DrawMode draw) const
+void ACDrawable::draw(DrawMode draw, unsigned int shader) const
 {
   unsigned int uvw_id;
+  int plasma_mat_id = -1;
+  int plasma_color_id = -1;
+  if(shader) {
+    plasma_mat_id = glGetUniformLocation(shader, "plasma_matrix");
+    plasma_color_id = glGetUniformLocation(shader, "layer_color");
+  }
   for(size_t draw_id = 0; draw_id < drawi->getNumDrawables(); draw_id++) {
     // Only do material setup for 3D preview
     plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(draw_id)->getObj());
@@ -238,7 +244,8 @@ void ACDrawable::draw(DrawMode draw) const
           layer = static_cast<plLayer*>(layer->getUnderLay()->getObj());
         }
         hsColorRGBA color = layer->getRuntime();
-        glColor4f(color.r, color.g, color.b, color.a);
+        if(shader != 0 && plasma_color_id != -1)
+          glUniform4fARB(plasma_color_id, color.r, color.g, color.b, color.a);
         glEnable(GL_TEXTURE_2D);
         if(layer->getTexture().Exists())
           glBindTexture(GL_TEXTURE_2D, texture_ids.value(layer->getTexture(), 0));
@@ -247,11 +254,10 @@ void ACDrawable::draw(DrawMode draw) const
           glLoadMatrixf(layer->getTransform().glMatrix());
         glMatrixMode(GL_MODELVIEW);
       } else if(draw == Draw3D) {
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glDisable(GL_TEXTURE_2D);
+        if(shader != 0 && plasma_color_id != -1)
+          glUniform4fARB(plasma_color_id, 1.0f, 1.0f, 1.0f, 1.0f);
       }
-      hsTArray<plGBufferVertex> verts = span->getVerts(icicle);
-      hsTArray<unsigned short> indices = span->getIndices(icicle);
-      //glPushMatrix();
       hsMatrix44 mat;
       if(scene_object->getCoordInterface().Exists()) {
         plCoordinateInterface *coord = static_cast<plCoordinateInterface*>(scene_object->getCoordInterface()->getObj());
@@ -259,21 +265,36 @@ void ACDrawable::draw(DrawMode draw) const
       } else {
         mat = icicle->getLocalToWorld();
       }
-      glBegin(GL_TRIANGLES);
-      for(size_t i = 0; i < indices.getSize(); i++) {
-        hsVector3 normal = verts[indices[i]].fNormal * mat;
-        glNormal3fv(reinterpret_cast<GLfloat*>(&(normal)));
-        if(uvw_id <= 9) {
-          hsVector3 uvw = verts[indices[i]].fUVWs[uvw_id];
-          glTexCoord3f(uvw.X, 0.0f - uvw.Y, uvw.Z);
-        } else {
-          glTexCoord3f(0.0f, 0.0f, 0.0f);
-        }
-        hsVector3 pos = verts[indices[i]].fPos * mat;
-        glVertex3fv(reinterpret_cast<GLfloat*>(&(pos)));
+      if(shader != 0 && plasma_mat_id != -1) {
+        glUniformMatrix4fvARB(plasma_mat_id, 1, GL_FALSE, mat.glMatrix());
       }
-      glEnd();
-      //glPopMatrix();
+      plGBufferGroup *buff = span->getBuffer(icicle->getGroupIdx());
+      const unsigned char *vertex_data = buff->getVertBufferStorage(icicle->getVBufferIdx());
+      const unsigned short *index_data = buff->getIdxBufferStorage(icicle->getIBufferIdx());
+      size_t normal_offset = 3*sizeof(float);
+      unsigned char fmt = buff->getFormat();
+      int weightCount = (fmt & plGBufferGroup::kSkinWeightMask) >> 4;
+      if(weightCount > 0) {
+        normal_offset += sizeof(float) * weightCount;
+        if(fmt & plGBufferGroup::kSkinIndices)
+          normal_offset += sizeof(int);
+      }
+      glVertexPointer(3, GL_FLOAT, buff->getStride(), vertex_data);
+      glNormalPointer(GL_FLOAT, buff->getStride(), vertex_data + normal_offset);
+      if(uvw_id <= 9) {
+        size_t uv_offset = normal_offset + 3*sizeof(float) + 2*sizeof(int) + 3*sizeof(float)*uvw_id;
+        glTexCoordPointer(3, GL_FLOAT, buff->getStride(), vertex_data+uv_offset);
+      } else {
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoord3f(0.0f, 0.0f, 0.0f);
+      }
+      if(draw == Draw3D) {
+        glColorPointer(4, GL_UNSIGNED_BYTE, buff->getStride(), vertex_data + normal_offset + 3*sizeof(float));
+      }
+      glDrawElements(GL_TRIANGLES, icicle->getILength(), GL_UNSIGNED_SHORT, &(index_data[icicle->getIStartIdx()]));
+      if(uvw_id > 9) {
+         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      }
     }
   }
 }

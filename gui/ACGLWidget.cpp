@@ -16,13 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
+#include "glew.h" // included *before* Qt can include the GL headers
 #include "ACGLWidget.h"
 #include "ACAge.h"
 #include "ACLayer.h"
 #include "ACObject.h"
 #include "ACUtil.h"
 
+#include <QFile>
+#include <QMessageBox>
 #include <QMouseEvent>
 
 #include <cmath>
@@ -35,11 +37,13 @@ ACGLWidget::ACGLWidget(QWidget *parent)
   : QGLWidget(parent),
     cam_x(0.0f), cam_y(0.0f), cam_z(-6.0f), // Start off at head height
     cam_h(0.0f), cam_v(0.0f),
-    current_age(0)
+    current_age(0),
+    vertex_shader_id(0), shader_program_id(0)
 {
   setFocusPolicy(Qt::ClickFocus);
   setMinimumSize(200, 150);
   camera_matrix = hsMatrix44::Identity();
+  glew_context = new GLEWContext;
 }
 
 void ACGLWidget::setAge(ACAge *age)
@@ -49,15 +53,70 @@ void ACGLWidget::setAge(ACAge *age)
 
 void ACGLWidget::initializeGL()
 {
+  current_glew_context = glew_context;
+  glewInit();
   glClearColor(0.15f, 0.13f, 0.19f, 1.0f);
   glFrontFace(GL_CCW);
   glCullFace(GL_BACK);
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+ glEnableClientState(GL_COLOR_ARRAY);
+  if(!glewIsSupported("GL_ARB_vertex_shader")) {
+    QMessageBox::warning(this, tr("OpenGL feature missing"), tr("GL_ARB_vertex_shader is not available. This is required for correct rendering in the 3D preview. 3D preview rendering will be incorrect on this computer"));
+    return;
+  }
+  QFile shader_file(ascii(":/data/plasma.vert"));
+  shader_file.open(QIODevice::ReadOnly);
+  QByteArray shader_string = shader_file.readAll();
+  vertex_shader_id = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+  const char *shader_data = shader_string.data();
+  glShaderSourceARB(vertex_shader_id, 1, &shader_data, NULL);
+  glCompileShaderARB(vertex_shader_id);
+  int success;
+  glGetObjectParameterivARB(vertex_shader_id, GL_OBJECT_COMPILE_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(vertex_shader_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(vertex_shader_id);
+    vertex_shader_id = 0;
+    return;
+  }
+  shader_program_id = glCreateProgramObjectARB();
+  glAttachObjectARB(shader_program_id, vertex_shader_id);
+  glLinkProgramARB(shader_program_id);
+  glGetObjectParameterivARB(shader_program_id, GL_OBJECT_LINK_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(shader_program_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(shader_program_id);
+    glDeleteObjectARB(vertex_shader_id);
+    shader_program_id = 0;
+    vertex_shader_id = 0;
+    return;
+  }
+  glValidateProgramARB(shader_program_id);
+  glGetObjectParameterivARB(shader_program_id, GL_OBJECT_VALIDATE_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(shader_program_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(shader_program_id);
+    glDeleteObjectARB(vertex_shader_id);
+    shader_program_id = 0;
+    vertex_shader_id = 0;
+    return;
+  }
+  glUseProgramObjectARB(shader_program_id);
 }
 
 void ACGLWidget::resizeGL(int w, int h)
 {
+  current_glew_context = glew_context;
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -68,6 +127,7 @@ void ACGLWidget::resizeGL(int w, int h)
 
 void ACGLWidget::paintGL()
 {
+  current_glew_context = glew_context;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   if(!current_age)
     return;
@@ -90,7 +150,7 @@ void ACGLWidget::paintGL()
 
   for(int i = 0; i < current_age->layerCount(); i++)
     for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
-      current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw3D);
+      current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw3D, shader_program_id);
 }
 
 void ACGLWidget::keyPressEvent(QKeyEvent *event)

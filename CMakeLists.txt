@@ -39,6 +39,7 @@ set(AC_SRCS
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
     object/ACSpawnPoint.cpp
+    3rdparty/glew/glew.c
 )
 
 set(AC_HDRS
@@ -87,7 +88,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}
                     ${CMAKE_CURRENT_SOURCE_DIR}/material
                     ${CMAKE_CURRENT_SOURCE_DIR}/object
                     ${CMAKE_CURRENT_SOURCE_DIR}/properties
+                    ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/glew
 )
+
+add_definitions("-DGLEW_MX" "-DGLEW_STATIC")
 
 if(QT_VERSION_MINOR LESS 6)
   add_subdirectory(3rdparty/QtIconLoader)
