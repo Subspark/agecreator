@@ -17,13 +17,17 @@
 
 */
 
+#include "glew.h" // included *before* Qt can include the GL headers
 #include "AC2dWidget.h"
 #include "ACObject.h"
 #include "ACAge.h"
+#include "ACUtil.h"
 
 AC2dWidget::AC2dWidget(QWidget *parent)
   : QGLWidget(parent), current_age(0)
-{}
+{
+  glew_context = new GLEWContext;
+}
 
 void AC2dWidget::setAge(ACAge *age)
 {
@@ -32,21 +36,27 @@ void AC2dWidget::setAge(ACAge *age)
 
 void AC2dWidget::initializeGL()
 {
+  current_glew_context = glew_context;
+  glewInit();
   qglClearColor(palette().color(QPalette::Base));
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void AC2dWidget::resizeGL(int w, int h)
 {
+  current_glew_context = glew_context;
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   if(w > h) {
-    size_w = 50.0*(double(w)/double(h));
-    size_h = 50.0;
+    size_w = 200.0*(double(w)/double(h));
+    size_h = 200.0;
   } else {
-    size_w = 50.0;
-    size_h = 50.0*(double(h)/double(w));
+    size_w = 200.0;
+    size_h = 200.0*(double(h)/double(w));
   }
   glOrtho(-size_w, size_w, -size_h, size_h, -10000.0, 10000.0);
   glMatrixMode(GL_MODELVIEW);
@@ -54,6 +64,7 @@ void AC2dWidget::resizeGL(int w, int h)
 
 void AC2dWidget::paintGL()
 {
+  current_glew_context = glew_context;
   glClear(GL_COLOR_BUFFER_BIT);
   int w = size_w;
   int h = size_h;
@@ -64,13 +75,13 @@ void AC2dWidget::paintGL()
   glVertex2f(0.0f, -size_h);
   glVertex2f(0.0f, size_h);
   qglColor(palette().color(QPalette::Mid));
-  for(int i = 5; i < h; i+=5) {
+  for(int i = 10; i < h; i+=10) {
     glVertex2f(-size_w, float(i));
     glVertex2f(size_w, float(i));
     glVertex2f(-size_w, float(-i));
     glVertex2f(size_w, float(-i));
   }
-  for(int i = 5; i < w; i+=5) {
+  for(int i = 10; i < w; i+=10) {
     glVertex2f(float(i), -size_h);
     glVertex2f(float(i), size_h);
     glVertex2f(float(-i), -size_h);

@@ -66,7 +66,7 @@ public:
   void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt);
   bool loadFromFile(const QString &filename);
   
-  virtual void draw(DrawMode draw) const;
+  virtual void draw(DrawMode draw, unsigned int shader = 0) const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);

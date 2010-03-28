@@ -25,6 +25,7 @@
 #include <Math/hsMatrix44.h>
 
 class ACAge;
+struct GLEWContextStruct;
 
 class AC2dWidget : public QGLWidget
 {
@@ -47,6 +48,7 @@ protected:
 private:
   double size_w, size_h;
   ACAge *current_age;
+  GLEWContextStruct *glew_context;
 };
 
 #endif // AC2DWIDGET_H

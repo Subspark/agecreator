@@ -25,6 +25,7 @@
 #include <Math/hsMatrix44.h>
 
 class ACAge;
+struct GLEWContextStruct;
 
 class ACGLWidget : public QGLWidget
 {
@@ -50,6 +51,9 @@ private:
   QPoint last_pos;
   hsMatrix44 camera_matrix;
   ACAge *current_age;
+  GLEWContextStruct *glew_context;
+  unsigned int vertex_shader_id;
+  unsigned int shader_program_id;
 };
 
 #endif // ACGLWIDGET_H

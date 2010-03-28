@@ -22,3 +22,4 @@
 plResManager *manager;
 plLocation virtual_loc;
 QMap<plKey, unsigned int> texture_ids;
+void *current_glew_context;
