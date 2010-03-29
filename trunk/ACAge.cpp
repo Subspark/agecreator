@@ -25,6 +25,8 @@
 #include "ACSpawnPoint.h"
 #include "ACPhysicalDrawable.h"
 
+#include "glew.h"
+
 #include <ResManager/plResManager.h>
 #include <ResManager/plAgeInfo.h>
 #include <PRP/KeyedObject/plLocation.h>
