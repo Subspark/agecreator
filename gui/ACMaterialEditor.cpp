@@ -62,7 +62,7 @@ void ACMaterialEditor::updateMaterialLayers()
     mat->init(toPlasma(matname));
     manager->AddObject(texture_page, mat);
     plLayer *l = new plLayer;
-    l->init(toPlasma(matname + ascii("layer0")));
+    l->init(toPlasma(matname + ascii("layer")));
     manager->AddObject(texture_page, l);
     l->setAmbient(hsColorRGBA());
     l->setPreshade(hsColorRGBA(1.0f, 1.0f, 1.0f));
@@ -83,7 +83,7 @@ void ACMaterialEditor::updateMaterialLayers()
   hsGMaterial *mat = static_cast<hsGMaterial*>(selectedMaterial()->getObj());
   int mat_name_size = (toQt(selectedMaterial()->getName()) + QChar::fromAscii('_')).length();
   for(size_t i = 0; i < mat->getNumLayers(); i++) {
-    ui.layerList->addItem(toQt(mat->getLayer(i)->getName()).remove(0, mat_name_size));
+    ui.layerList->addItem(toQt(mat->getLayer(i)->getName()));
   }
   ui.layerList->setCurrentRow(0);
 }
