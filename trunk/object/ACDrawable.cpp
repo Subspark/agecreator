@@ -55,8 +55,8 @@ ACDrawable::ACDrawable(const QString &name)
   manager->AddObject(virtual_loc, drawi);
   scene_object->setDrawInterface(drawi->getKey());
   
-  QAction * action;
-  action = menu->addAction(tr("Mesh Properties"));
+  QAction *action;
+  menu->addAction(tr("Mesh Properties"));
   action = menu->addAction(tr("Material Properties"));
   connect(action, SIGNAL(triggered(bool)), this, SLOT(editMaterial()));
 }
@@ -70,8 +70,10 @@ ACDrawable::ACDrawable(plKey key)
   plDrawableSpans *span = static_cast<plDrawableSpans*>(drawi->getDrawable(0)->getObj());
   material = span->getMaterial(span->getSpan(drawi->getDrawableKey(0))->getMaterialIdx());
   
+  QAction *action;
   menu->addAction(tr("Mesh Properties"));
-  menu->addAction(tr("Material Properties"));
+  action = menu->addAction(tr("Material Properties"));
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(editMaterial()));
 }
 
 ACDrawable::ACDrawable::~ACDrawable()
