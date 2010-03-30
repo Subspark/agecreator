@@ -168,7 +168,7 @@ void ACDrawable::setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTAr
   plDISpanIndex di_index;
   di_index.fIndices.append(id);
   span->addDIIndex(di_index);
-  drawi->addDrawable(span->getKey(), id);
+  drawi->addDrawable(span->getKey(), span->getNumDIIndices()-1);
   
   emit meshDataUpdated(verts.getSize(), &(verts[0]), indices.getSize(), &(indices[0]));
 }
