@@ -543,4 +543,7 @@ void ACAge::exportAge(const QString &path)
   stream.open((path+QDir::separator()+name()+ascii(".fni")).toLocal8Bit().data(), fmCreate, plEncryptedStream::kEncAuto);
   stream.write(strlen(fni_string), fni_string);
   stream.close();
+  stream.open((path+QDir::separator()+name()+ascii(".sum")).toLocal8Bit().data(), fmCreate, plEncryptedStream::kEncAuto);
+  stream.write(8, "\0\0\0\0\0\0\0\0");
+  stream.close();
 }
