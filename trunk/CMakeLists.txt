@@ -36,6 +36,7 @@ set(AC_SRCS
     gui/ACMaterialEditor.cpp
     gui/ACObjectNameDelegate.cpp
     object/ACDrawable.cpp
+    object/ACMesh.cpp
     object/ACObject.cpp
     object/ACPhysicalDrawable.cpp
     object/ACSpawnPoint.cpp
@@ -56,6 +57,7 @@ set(AC_HDRS
     gui/ACMaterialEditor.h
     gui/ACObjectNameDelegate.h
     object/ACDrawable.h
+    object/ACMesh.h
     object/ACObject.h
     object/ACPhysicalDrawable.h
     object/ACSpawnPoint.h

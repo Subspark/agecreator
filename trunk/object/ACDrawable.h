@@ -32,26 +32,7 @@ class plDrawableSpans;
 class plDrawInterface;
 class plGBufferVertex;
 
-class ACDrawableSpans : public QObject
-{
-  Q_OBJECT
-public:
-  ACDrawableSpans();
-  ~ACDrawableSpans();
-  void load(plLocation);
-  plDrawableSpans *getSpan(unsigned int render_level, unsigned int criteria);
-  size_t getGroupId(plDrawableSpans *span, unsigned char format);
-  void meshRemoved(int id, unsigned char format);
-  int getMaterialId(plDrawableSpans *span, plKey mat);
-  
-signals:
-  void idUpdated(int, unsigned char format);
-private:
-  QMap<QPair<unsigned int, unsigned int>, plDrawableSpans*> spans;
-  QMap<QPair<plDrawableSpans *, unsigned char>, size_t> group_ids;
-  plKey scene_node;
-  plString span_name(unsigned int render_level, unsigned int criteria);
-};
+class ACMesh;
 
 class ACDrawable : public ACObject
 {
@@ -60,10 +41,8 @@ public:
   ACDrawable(const QString &name);
   ACDrawable(plKey key);
   virtual ~ACDrawable();
-
-  void setMaterial(plKey mat);
   
-  void setMeshData(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt);
+  //TODO: make this more generalized towards dealing with sub-meshes
   bool loadFromFile(const QString &filename);
   
   virtual void draw(DrawMode draw, unsigned int shader = 0) const;
@@ -78,20 +57,13 @@ signals:
   void meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*);
 
 protected:
-  plKey material;
   plDrawInterface *drawi;
   unsigned char format;
-  QSharedPointer<ACDrawableSpans> spans;
-  
-  void clearMeshData();
-  void moveMeshData(plLocation loc);
-  
-  static QMap<plLocation, QWeakPointer<ACDrawableSpans> > weak_spans;
-  static QSharedPointer<ACDrawableSpans> getSpans(plLocation loc);
+  QList<ACMesh*> meshes;
+  plDrawableSpans *findSpans(unsigned int render_level, unsigned int criteria);
 
 private slots:
   void idUpdated(int id, unsigned char fmt);
-  void editMaterial();
 };
 
 #endif // ACDRAWABLE_H

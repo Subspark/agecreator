@@ -402,7 +402,6 @@ void ACAge::addObject(int object_type)
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
         return;
       }
-      qobject_cast<ACPhysicalDrawable*>(new_object)->setMaterial(defaultMaterial());
       break;
     }
     case idDrawable: {
@@ -415,7 +414,6 @@ void ACAge::addObject(int object_type)
         QMessageBox::critical(NULL, tr("AgeCreator Error"), tr("Could not load model file: %1").arg(model_file));
         return;
       }
-      qobject_cast<ACDrawable*>(new_object)->setMaterial(defaultMaterial());
       break;
     }
     default:
