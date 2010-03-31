@@ -62,6 +62,8 @@ ACDrawable::ACDrawable(plKey key)
   drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
   for(size_t i = 0; i < drawi->getNumDrawables(); i++) {
     plDrawableSpans *spans = static_cast<plDrawableSpans*>(drawi->getDrawable(i)->getObj());
+    if(drawi->getDrawableKey(i) < 0)
+      continue;
     plDISpanIndex idx = spans->getDIIndex(drawi->getDrawableKey(i));
     for(size_t j = 0; j < idx.fIndices.getSize(); j++)
       meshes.append(new ACMesh(static_cast<plIcicle*>(spans->getSpan(idx.fIndices[j])), spans->getKey()));
