@@ -82,8 +82,8 @@ void ACMaterialEditor::updateMaterialLayers()
   ui.layerList->clear();
   hsGMaterial *mat = static_cast<hsGMaterial*>(selectedMaterial()->getObj());
   int mat_name_size = (toQt(selectedMaterial()->getName()) + QChar::fromAscii('_')).length();
-  for(size_t i = 0; i < mat->getNumLayers(); i++) {
-    ui.layerList->addItem(toQt(mat->getLayer(i)->getName()));
+  for(size_t i = 0; i < mat->getLayers().getSize(); i++) {
+    ui.layerList->addItem(toQt(mat->getLayers()[i]->getName()));
   }
   ui.layerList->setCurrentRow(0);
 }
@@ -92,7 +92,7 @@ void ACMaterialEditor::updateLayerColor()
 {
   QPointer<QColorDialog> dialog = new QColorDialog(this);
   hsGMaterial *mat = static_cast<hsGMaterial*>(selectedMaterial()->getObj());
-  plLayer *layer = static_cast<plLayer*>(mat->getLayer(ui.layerList->currentRow())->getObj());
+  plLayer *layer = static_cast<plLayer*>(mat->getLayers()[ui.layerList->currentRow()]->getObj());
   dialog->setCurrentColor(toQt(layer->getPreshade()));
   dialog->setOptions(QColorDialog::ShowAlphaChannel);
   dialog->exec();
