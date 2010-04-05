@@ -99,8 +99,8 @@ void ACLayer::setName(const QString &name)
 ACObject *ACLayer::createPlasmaObject(plKey key)
 {
   plSceneObject *obj = static_cast<plSceneObject*>(key->getObj());
-  if(obj->getCoordInterface().Exists() && obj->getNumModifiers() == 1) {
-    if(obj->getModifier(0)->getType() == kSpawnModifier)
+  if(obj->getCoordInterface().Exists() && obj->getModifiers().getSize() == 1) {
+    if(obj->getModifiers()[0]->getType() == kSpawnModifier)
       return new ACSpawnPoint(key);
   }
   if(obj->getDrawInterface().Exists() && obj->getSimInterface().Exists()) {

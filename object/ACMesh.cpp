@@ -132,13 +132,13 @@ void ACMesh::draw(unsigned int shader_program, bool material_setup, bool set_col
     plasma_matrix_id = glGetUniformLocation(shader_program, "plasma_matrix");
     plasma_color_id = glGetUniformLocation(shader_program, "layer_color");
   }
-  if(material_setup && icicle->getMaterialIdx() < span->getNumMaterials()) {
-    hsGMaterial *mat = static_cast<hsGMaterial*>(span->getMaterial(icicle->getMaterialIdx())->getObj());
-    plLayer *layer = static_cast<plLayer*>(mat->getLayer(0)->getObj());
+  if(material_setup && icicle->getMaterialIdx() < span->getMaterials().getSize()) {
+    hsGMaterial *mat = static_cast<hsGMaterial*>(span->getMaterials()[icicle->getMaterialIdx()]->getObj());
+    plLayer *layer = static_cast<plLayer*>(mat->getLayers()[0]->getObj());
     unsigned int new_layer = 1;
     while(!(layer->getTexture().Exists()) || layer->getTexture()->getType() != kMipmap) {
-      if(new_layer < mat->getNumLayers())
-        layer = static_cast<plLayer*>(mat->getLayer(new_layer)->getObj());
+      if(new_layer < mat->getLayers().getSize())
+        layer = static_cast<plLayer*>(mat->getLayers()[new_layer]->getObj());
       else
         break;
       new_layer++;
