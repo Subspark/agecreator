@@ -66,7 +66,8 @@ ACDrawable::ACDrawable(plKey key)
       continue;
     plDISpanIndex idx = spans->getDIIndex(drawi->getDrawableKey(i));
     for(size_t j = 0; j < idx.fIndices.getSize(); j++)
-      meshes.append(new ACMesh(static_cast<plIcicle*>(spans->getSpan(idx.fIndices[j])), spans->getKey()));
+      if(spans->getNumSpans() >= idx.fIndices[j])
+        meshes.append(new ACMesh(static_cast<plIcicle*>(spans->getSpan(idx.fIndices[j])), spans->getKey()));
   }
   if(scene_object->getCoordInterface().Exists())
     foreach(ACMesh *mesh, meshes)
