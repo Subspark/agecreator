@@ -23,6 +23,7 @@
 #include "ACObject.h"
 #include "ACUtil.h"
 
+#include <QApplication>
 #include <QFile>
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -90,9 +91,10 @@ void ACGLWidget::initializeGL()
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
- glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
   if(!glewIsSupported("GL_ARB_vertex_shader")) {
-    QMessageBox::warning(this, tr("OpenGL feature missing"), tr("GL_ARB_vertex_shader is not available. This is required for correct rendering in the 3D preview. 3D preview rendering will be incorrect on this computer"));
+    QMessageBox::critical(this, tr("OpenGL feature missing"), tr("GL_ARB_vertex_shader is not available. This is a required feature. Age Creator will now terminate"));
+    QApplication::instance()->exit();
     return;
   }
   QFile shader_file(ascii(":/data/plasma.vert"));
