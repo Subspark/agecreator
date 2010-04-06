@@ -33,13 +33,12 @@ public:
   ACMesh(plIcicle *icicle_, plKey spans_);
   ~ACMesh();
 
-  void draw(unsigned int shader_program=0, bool material_setup=false, bool set_color=false) const;
+  void draw(unsigned int shader_program=0, plKey ci = plKey(), bool material_setup=false, bool set_color=false) const;
   //plKey material() const;
   //void setMaterial(plKey new_mat);
   unsigned int renderLevel() const;
   plKey spansKey() const;
   unsigned int spanId() const;
-  void setCoordinateInterface(plKey coordinate_interface);
 
 private:
   ACMesh(const ACMesh &); // unimplemented
@@ -47,7 +46,6 @@ private:
 
   plIcicle *icicle;
   plKey spans;
-  plKey ci;
 
   friend class ACMeshManager;
 };
