@@ -50,6 +50,8 @@ ACLayer::ACLayer(const plLocation &loc, ACAge *age)
     hsTArray<plKey>& array = node->getSceneObjects();
     for(unsigned int i = 0; i < array.getSize(); i++) {
       ACObject *obj = createPlasmaObject(array[i]);
+      if(!obj)
+        continue;
       obj->setParent(this);
       objects.append(obj);
     }
@@ -98,7 +100,11 @@ void ACLayer::setName(const QString &name)
 // Need to find a better way to do this
 ACObject *ACLayer::createPlasmaObject(plKey key)
 {
+  if(!key.Exists())
+    return 0;
   plSceneObject *obj = static_cast<plSceneObject*>(key->getObj());
+  if(!obj)
+    return 0;
   if(obj->getCoordInterface().Exists() && obj->getModifiers().getSize() == 1) {
     if(obj->getModifiers()[0]->getType() == kSpawnModifier)
       return new ACSpawnPoint(key);
