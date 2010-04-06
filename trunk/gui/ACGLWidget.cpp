@@ -30,12 +30,14 @@
 #include <cmath>
 
 #include <Math/hsGeometry3.h>
+#include <PRP/Object/plCoordinateInterface.h>
+#include <PRP/Object/plSceneObject.h>
 #include <PRP/Surface/plMipmap.h>
 #include <ResManager/plResManager.h>
 
 ACGLWidget::ACGLWidget(QWidget *parent)
   : QGLWidget(parent),
-    cam_x(0.0f), cam_y(0.0f), cam_z(-6.0f), // Start off at head height
+    cam_x(0.0f), cam_y(0.0f), cam_z(0.0f), // Start off at origin
     cam_h(0.0f), cam_v(0.0f),
     current_age(0),
     vertex_shader_id(0), shader_program_id(0)
@@ -49,6 +51,30 @@ ACGLWidget::ACGLWidget(QWidget *parent)
 void ACGLWidget::setAge(ACAge *age)
 {
   current_age = age;
+  cam_h = cam_v = 0.0f;
+  bool found = false;
+  std::vector<plLocation> locs = manager->getLocations();
+  for(int i = 0; i < locs.size() && !found; i++) {
+    std::vector<plKey> keys = manager->getKeys(locs[i], kSceneObject);
+    for(int j = 0; j < keys.size(); j++) {
+      if(keys[j]->getName() == plString("LinkInPointDefault")) {
+        plSceneObject *obj = static_cast<plSceneObject*>(keys[j]->getObj());
+        if(obj->getCoordInterface().Exists()) {
+          plCoordinateInterface *coord = static_cast<plCoordinateInterface*>(obj->getCoordInterface()->getObj());
+          hsMatrix44 mat = coord->getLocalToWorld();
+          cam_x = -mat(0, 3);
+          cam_y = -mat(1, 3);
+          cam_z = -(mat(2, 3)+6.0f); // offset for the avatar height
+          found = true;
+          break;
+        }
+      }
+    }
+  }
+  if(!found) {
+    cam_x = cam_y = 0.0f;
+    cam_z = -6.0f;
+  }
 }
 
 void ACGLWidget::initializeGL()
