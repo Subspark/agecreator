@@ -2,5 +2,6 @@
 <qresource>
 <file>./data/hector.obj</file>
 <file>./data/plasma.vert</file>
+<file>./data/2Dplasma.vert</file>
 </qresource>
 </RCC>

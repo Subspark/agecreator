@@ -23,6 +23,10 @@
 #include "ACAge.h"
 #include "ACUtil.h"
 
+#include <QApplication>
+#include <QFile>
+#include <QMessageBox>
+
 AC2dWidget::AC2dWidget(QWidget *parent)
   : QGLWidget(parent), current_age(0)
 {
@@ -43,6 +47,55 @@ void AC2dWidget::initializeGL()
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  if(!glewIsSupported("GL_ARB_vertex_shader")) {
+    QMessageBox::critical(this, tr("OpenGL feature missing"), tr("GL_ARB_vertex_shader is not available. This is a required feature. Age Creator will now terminate"));
+    QApplication::instance()->exit();
+    return;
+  }
+  QFile shader_file(ascii(":/data/2Dplasma.vert"));
+  shader_file.open(QIODevice::ReadOnly);
+  QByteArray shader_string = shader_file.readAll();
+  vertex_shader_id = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
+  const char *shader_data = shader_string.data();
+  glShaderSourceARB(vertex_shader_id, 1, &shader_data, NULL);
+  glCompileShaderARB(vertex_shader_id);
+  int success;
+  glGetObjectParameterivARB(vertex_shader_id, GL_OBJECT_COMPILE_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(vertex_shader_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(vertex_shader_id);
+    vertex_shader_id = 0;
+    return;
+  }
+  shader_program_id = glCreateProgramObjectARB();
+  glAttachObjectARB(shader_program_id, vertex_shader_id);
+  glLinkProgramARB(shader_program_id);
+  glGetObjectParameterivARB(shader_program_id, GL_OBJECT_LINK_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(shader_program_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(shader_program_id);
+    glDeleteObjectARB(vertex_shader_id);
+    shader_program_id = 0;
+    vertex_shader_id = 0;
+    return;
+  }
+  glValidateProgramARB(shader_program_id);
+  glGetObjectParameterivARB(shader_program_id, GL_OBJECT_VALIDATE_STATUS_ARB, &success);
+  if(!success) {
+    char infoLog[1024];
+    glGetInfoLogARB(shader_program_id, 1024, NULL, infoLog);
+    QMessageBox::warning(this, tr("OpenGL Error"), ascii(infoLog));
+    glDeleteObjectARB(shader_program_id);
+    glDeleteObjectARB(vertex_shader_id);
+    shader_program_id = 0;
+    vertex_shader_id = 0;
+    return;
+  }
+  glUseProgramObjectARB(shader_program_id);
 }
 
 void AC2dWidget::resizeGL(int w, int h)
@@ -68,6 +121,10 @@ void AC2dWidget::paintGL()
   glClear(GL_COLOR_BUFFER_BIT);
   int w = size_w;
   int h = size_h;
+  unsigned int matrix_id = glGetUniformLocation(shader_program_id, "plasma_matrix");
+  if(matrix_id != -1) {
+    glUniformMatrix4fvARB(matrix_id, 1, GL_FALSE, hsMatrix44::Identity().glMatrix());
+  }
   glBegin(GL_LINES);
   qglColor(palette().color(QPalette::Shadow));
   glVertex2f(-size_w, 0.0f);
@@ -95,7 +152,7 @@ void AC2dWidget::paintGL()
   qglColor(palette().color(QPalette::Text));
   for(int i = 0; i < current_age->layerCount(); i++)
     for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
-      current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw2D);
+      current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw2D, shader_program_id);
 }
 
 void AC2dWidget::contextMenuEvent(QContextMenuEvent* event)

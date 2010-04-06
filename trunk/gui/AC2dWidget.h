@@ -49,6 +49,8 @@ private:
   double size_w, size_h;
   ACAge *current_age;
   GLEWContextStruct *glew_context;
+  unsigned int vertex_shader_id;
+  unsigned int shader_program_id;
 };
 
 #endif // AC2DWIDGET_H
