@@ -122,7 +122,7 @@ ACMesh::~ACMesh()
   }
 }
 
-void ACMesh::draw(unsigned int shader_program, bool material_setup, bool set_color) const
+void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bool set_color) const
 {
   plDrawableSpans *span = static_cast<plDrawableSpans*>(spans->getObj());
   unsigned int uvw_id;
@@ -214,9 +214,4 @@ unsigned int ACMesh::spanId() const
     if(span->getSpan(i) == icicle)
       return i;
   return UINT_MAX;
-}
-
-void ACMesh::setCoordinateInterface(plKey coordinate_interface)
-{
-  ci = coordinate_interface;
 }

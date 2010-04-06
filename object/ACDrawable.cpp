@@ -66,12 +66,9 @@ ACDrawable::ACDrawable(plKey key)
       continue;
     plDISpanIndex idx = spans->getDIIndex(drawi->getDrawableKey(i));
     for(size_t j = 0; j < idx.fIndices.getSize(); j++)
-      if(spans->getNumSpans() >= idx.fIndices[j])
+      if(idx.fIndices[j] < spans->getNumSpans())
         meshes.append(new ACMesh(static_cast<plIcicle*>(spans->getSpan(idx.fIndices[j])), spans->getKey()));
   }
-  if(scene_object->getCoordInterface().Exists())
-    foreach(ACMesh *mesh, meshes)
-      mesh->setCoordinateInterface(scene_object->getCoordInterface());
   
   QAction *action;
   menu->addAction(tr("World Object Properties"));
@@ -135,9 +132,9 @@ void ACDrawable::draw(DrawMode mode, unsigned int shader) const
   //TODO: draw only for the correct renderlevel
   foreach(ACMesh *mesh, meshes) {
     if(mode == Draw3D)
-      mesh->draw(shader, true, true);
+      mesh->draw(shader, scene_object->getCoordInterface(), true, true);
     else
-      mesh->draw(shader);
+      mesh->draw(shader, scene_object->getCoordInterface());
   }
 }
 
