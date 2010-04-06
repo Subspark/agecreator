@@ -16,7 +16,7 @@ if(NOT HSPlasma_FOUND)
 
   include_directories(${HSPLASMA_INCLUDE})
 else(NOT HSPlasma_FOUND)
-  include_directories(${Plasma_INCLUDE_DIRS})
+  include_directories(${HSPlasma_INCLUDE_DIRS})
 endif(NOT HSPlasma_FOUND)
 
 include(${QT_USE_FILE})
