@@ -104,13 +104,16 @@ ACAge::ACAge(const QString &filename, QObject *parent)
   plSceneNode *null_node = new plSceneNode;
   null_node->init(toPlasma(name()));
   manager->AddObject(virtual_loc, null_node);
-  size_t num_pages = age->getNumPages();
+  std::vector<plLocation> locs = manager->getLocations();
+  std::vector<plLocation> age_locs;
+  for(int i = 0; i < locs.size(); i++) {
+    if(locs[i].getSeqPrefix() == sequencePrefix() && manager->FindPage(locs[i]))
+      age_locs.push_back(locs[i]);
+  }
+  size_t num_pages = age_locs.size();
   beginInsertRows(QModelIndex(), 0, num_pages-1);
   for(size_t i = 0; i < num_pages; i++) {
-    plLocation loc;
-    loc.setSeqPrefix(sequencePrefix());
-    loc.setPageNum(age->getPage(i).fSeqSuffix);
-    layers.append(new ACLayer(loc, this));
+    layers.append(new ACLayer(age_locs[i], this));
   }
   endInsertRows();
   // Manually load textures and Builtin PRPs
