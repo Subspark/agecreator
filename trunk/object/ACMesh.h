@@ -23,14 +23,13 @@
 
 class plDrawableSpans;
 class plGBufferVertex;
-class plIcicle;
 
 class ACMesh
 {
 public:
   ACMesh(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt, plDrawableSpans *spans);
   //ACMesh(const ACMesh &other, plDrawableSpans *new_spans);
-  ACMesh(plIcicle *icicle_, plKey spans_);
+  ACMesh(size_t icicle_id_, plKey spans_);
   ~ACMesh();
 
   void draw(unsigned int shader_program=0, plKey ci = plKey(), bool material_setup=false, bool set_color=false) const;
@@ -44,7 +43,7 @@ private:
   ACMesh(const ACMesh &); // unimplemented
   void operator=(const ACMesh&); // unimplemented
 
-  plIcicle *icicle;
+  size_t icicle_id;
   plKey spans;
 
   friend class ACMeshManager;

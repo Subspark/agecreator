@@ -65,7 +65,7 @@ ACDrawable::ACDrawable(plKey key)
     plDISpanIndex idx = spans->getDIIndex(drawi->getDrawableKey(i));
     for(size_t j = 0; j < idx.fIndices.getSize(); j++)
       if(idx.fIndices[j] < spans->getNumSpans())
-        meshes.append(new ACMesh(static_cast<plIcicle*>(spans->getSpan(idx.fIndices[j])), spans->getKey()));
+        meshes.append(new ACMesh(idx.fIndices[j], spans->getKey()));
   }
   
   QAction *action;

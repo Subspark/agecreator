@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
+#include "glew.h"
 
 #include "ACMesh.h"
 #include "ACUtil.h"
@@ -26,9 +27,11 @@
 #include <PRP/Surface/plLayer.h>
 #include <PRP/plSceneNode.h>
 
+#include <QSet>
+
 #include <climits>
 
-#include "glew.h"
+QSet<ACMesh*> meshes;
 
 ACMesh::ACMesh(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt, plDrawableSpans *spans)
 {
@@ -105,21 +108,30 @@ ACMesh::ACMesh(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned s
   icicle.setVLength(verts.getSize());
   icicle.setMinDist(-1.0f);
   icicle.setMaxDist(-1.0f);
-  size_t id = spans->addIcicle(icicle);
+  icicle_id = spans->addIcicle(icicle);
   
   this->spans = spans->getKey();
-  this->icicle = static_cast<plIcicle*>(spans->getSpan(id));
+  
+  meshes.insert(this);
 }
 
-ACMesh::ACMesh(plIcicle *icicle_, plKey spans_)
-  : icicle(icicle_), spans(spans_)
-{}
+ACMesh::ACMesh(size_t icicle_id_, plKey spans_)
+  : spans(spans_), icicle_id(icicle_id_)
+{
+  meshes.insert(this);
+}
 
 ACMesh::~ACMesh()
 {
   if(spans.Exists()) {
+    plDrawableSpans *span = static_cast<plDrawableSpans*>(spans->getObj());
     //TODO: remove mesh data
+//    foreach(ACMesh* mesh, meshes)
+//      if(mesh->spans == spans && mesh->icicle_id > icicle_id) {
+//        mesh->icicle_id--;
+//      }
   }
+  meshes.remove(this);
 }
 
 void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bool set_color) const
@@ -132,6 +144,7 @@ void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bo
     plasma_matrix_id = glGetUniformLocation(shader_program, "plasma_matrix");
     plasma_color_id = glGetUniformLocation(shader_program, "layer_color");
   }
+  plIcicle *icicle = span->getIcicle(icicle_id);
   if(material_setup && icicle->getMaterialIdx() < span->getMaterials().getSize()) {
     hsGMaterial *mat = static_cast<hsGMaterial*>(span->getMaterials()[icicle->getMaterialIdx()]->getObj());
     plLayer *layer = static_cast<plLayer*>(mat->getLayers()[0]->getObj());
@@ -209,9 +222,5 @@ plKey ACMesh::spansKey() const
 
 unsigned int ACMesh::spanId() const
 {
-  plDrawableSpans* span = static_cast<plDrawableSpans*>(spans->getObj());
-  for(size_t i = 0; i < span->getNumSpans(); i++)
-    if(span->getSpan(i) == icicle)
-      return i;
-  return UINT_MAX;
+  return icicle_id;
 }
