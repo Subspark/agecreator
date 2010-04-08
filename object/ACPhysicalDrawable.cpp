@@ -58,8 +58,8 @@ ACPhysicalDrawable::ACPhysicalDrawable(const QString& name)
 ACPhysicalDrawable::ACPhysicalDrawable(plKey key)
   : ACDrawable(key)
 {
-  sim = static_cast<plSimulationInterface*>(scene_object->getSimInterface()->getObj());
-  phys = static_cast<plGenericPhysical*>(sim->getPhysical()->getObj());
+  sim = plPointer<plSimulationInterface>(scene_object->getSimInterface());
+  phys = plPointer<plGenericPhysical>(sim->getPhysical());
   connect(this, SIGNAL(meshDataUpdated(size_t, const plGBufferVertex*, size_t, const unsigned short*)),
           this, SLOT(updateCollider(size_t, const plGBufferVertex*, size_t, const unsigned short*)));
   menu->addAction(tr("Physics Properties"));

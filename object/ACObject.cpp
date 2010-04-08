@@ -41,7 +41,7 @@ ACObject::ACObject(const QString& name)
 ACObject::ACObject(plKey key)
   : QObject(0)
 {
-  scene_object = static_cast<plSceneObject*>(key->getObj());
+  scene_object = plPointer<plSceneObject>(key);
   menu = new QMenu;
 }
 

@@ -464,7 +464,7 @@ void ACAge::loadTextures(QGLContext *context)
   glGenTextures(textures.size(), texids);
   for(unsigned int i = 0; i < textures.size(); i++) {
     glBindTexture(GL_TEXTURE_2D, texids[i]);
-    plMipmap *mip = static_cast<plMipmap*>(textures[i]->getObj());
+    plMipmap *mip = plPointer<plMipmap>(textures[i]);
     if(!mip)
       continue;
     texture_ids.insert(textures[i], texids[i]);

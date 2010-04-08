@@ -76,6 +76,12 @@ inline QColor toQt(const hsColorRGBA &pc)
   return qc;
 }
 
+template<class PLASMATYPE>
+inline PLASMATYPE *plPointer(plKey key)
+{
+  return static_cast<PLASMATYPE*>(key->getObj());
+}
+
 inline GLEWContextStruct *glewGetContext() {
   return static_cast<GLEWContextStruct*>(current_glew_context);
 }

@@ -57,9 +57,9 @@ ACDrawable::ACDrawable(const QString &name)
 ACDrawable::ACDrawable(plKey key)
   : ACObject(key)
 {
-  drawi = static_cast<plDrawInterface*>(scene_object->getDrawInterface()->getObj());
+  drawi = plPointer<plDrawInterface>(scene_object->getDrawInterface());
   for(size_t i = 0; i < drawi->getNumDrawables(); i++) {
-    plDrawableSpans *spans = static_cast<plDrawableSpans*>(drawi->getDrawable(i)->getObj());
+    plDrawableSpans *spans = plPointer<plDrawableSpans>(drawi->getDrawable(i));
     if(drawi->getDrawableKey(i) < 0)
       continue;
     plDISpanIndex idx = spans->getDIIndex(drawi->getDrawableKey(i));
@@ -175,7 +175,7 @@ plDrawableSpans *ACDrawable::findSpans(unsigned int render_level, unsigned int c
 {
   std::vector<plKey> keys = manager->getKeys(location(), kDrawableSpans);
   for(int i = 0; i < keys.size(); i++) {
-    plDrawableSpans *spans = static_cast<plDrawableSpans*>(keys[i]->getObj());
+    plDrawableSpans *spans = plPointer<plDrawableSpans>(keys[i]);
     if(spans->getRenderLevel() == render_level && spans->getCriteria() == criteria)
       return spans;
   }

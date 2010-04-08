@@ -42,7 +42,7 @@ ACSpawnPoint::ACSpawnPoint(const QString& name)
   
   hector = new ACDrawable(ascii("hector_")+name);
   hector->loadFromFile(ascii(":/data/hector.obj"));
-  plSceneObject *obj = static_cast<plSceneObject*>(hector->key()->getObj());
+  plSceneObject *obj = plPointer<plSceneObject>(hector->key());
   obj->setCoordInterface(coord->getKey());
 }
 
@@ -50,12 +50,12 @@ ACSpawnPoint::ACSpawnPoint(plKey key)
   : ACObject(key)
 {
   // TODO: make this more robust to allow spawn points with other modifiers
-  spawn = static_cast<plSpawnModifier*>(scene_object->getModifiers()[0]->getObj());
-  coord = static_cast<plCoordinateInterface*>(scene_object->getCoordInterface()->getObj());
+  spawn = plPointer<plSpawnModifier>(scene_object->getModifiers()[0]);
+  coord = plPointer<plCoordinateInterface>(scene_object->getCoordInterface());
 
   hector = new ACDrawable(ascii("hector_")+name());
   hector->loadFromFile(ascii(":/data/hector.obj"));
-  plSceneObject *obj = static_cast<plSceneObject*>(hector->key()->getObj());
+  plSceneObject *obj = plPointer<plSceneObject>(hector->key());
   obj->setCoordInterface(coord->getKey());
 }
 

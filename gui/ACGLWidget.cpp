@@ -59,9 +59,9 @@ void ACGLWidget::setAge(ACAge *age)
     std::vector<plKey> keys = manager->getKeys(locs[i], kSceneObject);
     for(int j = 0; j < keys.size(); j++) {
       if(keys[j]->getName() == plString("LinkInPointDefault")) {
-        plSceneObject *obj = static_cast<plSceneObject*>(keys[j]->getObj());
+        plSceneObject *obj = plPointer<plSceneObject>(keys[j]);
         if(obj->getCoordInterface().Exists()) {
-          plCoordinateInterface *coord = static_cast<plCoordinateInterface*>(obj->getCoordInterface()->getObj());
+          plCoordinateInterface *coord = plPointer<plCoordinateInterface>(obj->getCoordInterface());
           hsMatrix44 mat = coord->getLocalToWorld();
           cam_x = -mat(0, 3);
           cam_y = -mat(1, 3);
