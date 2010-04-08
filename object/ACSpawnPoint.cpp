@@ -17,6 +17,7 @@
 
 */
 
+#include "glew.h"
 #include "ACSpawnPoint.h"
 #include "ACDrawable.h"
 #include "ACPage.h"
@@ -25,8 +26,6 @@
 #include <PRP/Modifier/plSpawnModifier.h>
 #include <PRP/Object/plCoordinateInterface.h>
 #include <PRP/Object/plSceneObject.h>
-
-#include <GL/gl.h>
 
 ACSpawnPoint::ACSpawnPoint(const QString& name)
   : ACObject(name)

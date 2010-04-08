@@ -39,8 +39,6 @@
 #include <QMenu>
 #include <QPointer>
 
-#include "glew.h"
-
 ACDrawable::ACDrawable(const QString &name)
   : ACObject(name)
 {
@@ -76,7 +74,7 @@ ACDrawable::ACDrawable(plKey key)
   connect(action, SIGNAL(triggered(bool)), this, SLOT(addMeshFromFile()));
 }
 
-ACDrawable::ACDrawable::~ACDrawable()
+ACDrawable::~ACDrawable()
 {
   foreach(ACMesh *mesh, meshes)
     delete mesh;
