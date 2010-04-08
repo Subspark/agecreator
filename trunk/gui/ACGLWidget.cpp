@@ -54,6 +54,7 @@ void ACGLWidget::setAge(ACAge *age)
   current_age = age;
   cam_h = cam_v = 0.0f;
   bool found = false;
+  plKey fallback_spawn;
   std::vector<plLocation> locs = manager->getLocations();
   for(int i = 0; i < locs.size() && !found; i++) {
     std::vector<plKey> keys = manager->getKeys(locs[i], kSceneObject);
@@ -69,12 +70,22 @@ void ACGLWidget::setAge(ACAge *age)
           found = true;
           break;
         }
-      }
+      } else if(plPointer<plSceneObject>(keys[j])->getModifiers().getSize() && plPointer<plSceneObject>(keys[j])->getModifiers()[0]->getType() == kSpawnModifier)
+        fallback_spawn = keys[j];
     }
   }
   if(!found) {
-    cam_x = cam_y = 0.0f;
-    cam_z = -6.0f;
+    if(fallback_spawn.Exists()) {
+      plSceneObject *obj = plPointer<plSceneObject>(fallback_spawn);
+      plCoordinateInterface *coord = plPointer<plCoordinateInterface>(obj->getCoordInterface());
+      hsMatrix44 mat = coord->getLocalToWorld();
+      cam_x = -mat(0, 3);
+      cam_y = -mat(1, 3);
+      cam_z = -(mat(2, 3)+6.0f); // offset for the avatar height
+    } else {
+      cam_x = cam_y = 0.0f;
+      cam_z = -6.0f;
+    }
   }
 }
 
