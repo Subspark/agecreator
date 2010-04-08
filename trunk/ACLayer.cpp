@@ -102,7 +102,7 @@ ACObject *ACLayer::createPlasmaObject(plKey key)
 {
   if(!key.Exists())
     return 0;
-  plSceneObject *obj = static_cast<plSceneObject*>(key->getObj());
+  plSceneObject *obj = plPointer<plSceneObject>(key);
   if(!obj)
     return 0;
   if(obj->getCoordInterface().Exists() && obj->getModifiers().getSize() == 1) {

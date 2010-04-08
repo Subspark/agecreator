@@ -124,7 +124,7 @@ ACMesh::ACMesh(size_t icicle_id_, plKey spans_)
 ACMesh::~ACMesh()
 {
   if(spans.Exists()) {
-    plDrawableSpans *span = static_cast<plDrawableSpans*>(spans->getObj());
+    plDrawableSpans *span = plPointer<plDrawableSpans>(spans);
     //TODO: remove mesh data
 //    foreach(ACMesh* mesh, meshes)
 //      if(mesh->spans == spans && mesh->icicle_id > icicle_id) {
@@ -136,7 +136,7 @@ ACMesh::~ACMesh()
 
 void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bool set_color) const
 {
-  plDrawableSpans *span = static_cast<plDrawableSpans*>(spans->getObj());
+  plDrawableSpans *span = plPointer<plDrawableSpans>(spans);
   unsigned int uvw_id;
   int plasma_matrix_id = -1;
   int plasma_color_id = -1;
@@ -146,18 +146,18 @@ void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bo
   }
   plIcicle *icicle = span->getIcicle(icicle_id);
   if(material_setup && icicle->getMaterialIdx() < span->getMaterials().getSize()) {
-    hsGMaterial *mat = static_cast<hsGMaterial*>(span->getMaterials()[icicle->getMaterialIdx()]->getObj());
-    plLayer *layer = static_cast<plLayer*>(mat->getLayers()[0]->getObj());
+    hsGMaterial *mat = plPointer<hsGMaterial>(span->getMaterials()[icicle->getMaterialIdx()]);
+    plLayer *layer = plPointer<plLayer>(mat->getLayers()[0]);
     unsigned int new_layer = 1;
     while(!(layer->getTexture().Exists()) || layer->getTexture()->getType() != kMipmap) {
       if(new_layer < mat->getLayers().getSize())
-        layer = static_cast<plLayer*>(mat->getLayers()[new_layer]->getObj());
+        layer = plPointer<plLayer>(mat->getLayers()[new_layer]);
       else
         break;
       new_layer++;
     }
     while(layer->getUnderLay().Exists()) {
-      layer = static_cast<plLayer*>(layer->getUnderLay()->getObj());
+      layer = plPointer<plLayer>(layer->getUnderLay());
     }
     hsColorRGBA color = layer->getRuntime();
     if(plasma_color_id != -1)
@@ -174,7 +174,7 @@ void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bo
   }
   hsMatrix44 mat;
   if(ci.Exists()) {
-    plCoordinateInterface *coord = static_cast<plCoordinateInterface*>(ci->getObj());
+    plCoordinateInterface *coord = plPointer<plCoordinateInterface>(ci);
     mat = coord->getLocalToWorld();
   } else {
     mat = icicle->getLocalToWorld();
@@ -212,7 +212,7 @@ void ACMesh::draw(unsigned int shader_program, plKey ci, bool material_setup, bo
 
 unsigned int ACMesh::renderLevel() const
 {
-  return static_cast<plDrawableSpans*>(spans->getObj())->getRenderLevel();
+  return plPointer<plDrawableSpans>(spans)->getRenderLevel();
 }
 
 plKey ACMesh::spansKey() const
