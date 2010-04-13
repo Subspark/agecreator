@@ -125,14 +125,14 @@ bool ACDrawable::loadFromFile(const QString &filename)
   return true;
 }
 
-void ACDrawable::draw(DrawMode mode, unsigned int shader) const
+void ACDrawable::draw(DrawMode mode) const
 {
   //TODO: draw only for the correct renderlevel
   foreach(ACMesh *mesh, meshes) {
     if(mode == Draw3D)
-      mesh->draw(shader, scene_object->getCoordInterface(), true, true);
+      mesh->draw(scene_object->getCoordInterface(), true, true);
     else
-      mesh->draw(shader, scene_object->getCoordInterface());
+      mesh->draw(scene_object->getCoordInterface());
   }
 }
 

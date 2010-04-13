@@ -53,7 +53,6 @@ private:
   ACAge *current_age;
   GLEWContextStruct *glew_context;
   unsigned int vertex_shader_id;
-  unsigned int shader_program_id;
 };
 
 #endif // ACGLWIDGET_H

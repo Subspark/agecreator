@@ -32,7 +32,7 @@ public:
   ACMesh(size_t icicle_id_, plKey spans_);
   ~ACMesh();
 
-  void draw(unsigned int shader_program=0, plKey ci = plKey(), bool material_setup=false, bool set_color=false) const;
+  void draw(plKey ci = plKey(), bool material_setup=false, bool set_color=false) const;
   //plKey material() const;
   //void setMaterial(plKey new_mat);
   unsigned int renderLevel() const;
