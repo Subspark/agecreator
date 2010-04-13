@@ -27,6 +27,8 @@
 #include <PRP/Surface/plLayer.h>
 #include <PRP/plSceneNode.h>
 
+#include <QApplication>
+#include <QPalette>
 #include <QSet>
 
 #include <climits>
@@ -200,6 +202,29 @@ void ACMesh::draw(plKey ci, unsigned int draw_flags) const
   glDrawElements(GL_TRIANGLES, icicle->getILength(), GL_UNSIGNED_SHORT, &(index_data[icicle->getIStartIdx()]));
   if(uvw_id > 9) {
      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  }
+  
+  if(draw_flags & DRAW_HILIGHT) {
+    QColor hil = QApplication::palette().color(QPalette::Highlight);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    if(draw_flags & DRAW_COLOR)
+      glDisableClientState(GL_COLOR_ARRAY);
+    if(draw_flags & DRAW_MATERIAL)
+      glDisable(GL_TEXTURE_2D);
+    if(draw_flags & DRAW_COLOR || draw_flags & DRAW_MATERIAL) {
+      glProgramLocalParameter4fARB(GL_VERTEX_PROGRAM_ARB, 0, hil.redF(), hil.greenF(), hil.blueF(), 1.0f);
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    else
+      glColor4f(hil.redF(), hil.greenF(), hil.blueF(), 0.5f);
+    glDrawElements(GL_TRIANGLES, icicle->getILength(), GL_UNSIGNED_SHORT, &(index_data[icicle->getIStartIdx()]));
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    if(draw_flags & DRAW_COLOR)
+      glEnableClientState(GL_COLOR_ARRAY);
+    if(draw_flags & DRAW_MATERIAL)
+      glEnable(GL_TEXTURE_2D);
   }
   glPopMatrix();
 }
