@@ -45,7 +45,7 @@ public:
   //TODO: make this more generalized towards dealing with sub-meshes
   bool loadFromFile(const QString &filename);
   
-  virtual void draw(DrawMode draw) const;
+  virtual void draw(DrawMode draw, unsigned int rlevel = 0xFFFFFFFF) const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage* page);
   virtual void unregisterFromPage(ACPage* page);

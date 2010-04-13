@@ -31,6 +31,7 @@
 #include <cmath>
 
 #include <Math/hsGeometry3.h>
+#include <PRP/Geometry/plDrawableSpans.h>
 #include <PRP/Object/plCoordinateInterface.h>
 #include <PRP/Object/plSceneObject.h>
 #include <PRP/Surface/plMipmap.h>
@@ -99,6 +100,8 @@ void ACGLWidget::initializeGL()
   glEnable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -158,10 +161,23 @@ void ACGLWidget::paintGL()
   // update all the world transform matrices. This should theoeretically be done only when stuff changes, but for now this is fine
   // TODO: Move this code someplace reasonable
   
-
-  for(int i = 0; i < current_age->layerCount(); i++)
-    for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
-      current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw3D);
+  // Get all the different render levels
+  QSet<unsigned int> rlevels;
+  std::vector<plLocation> locs = manager->getLocations();
+  for(int i = 0; i < locs.size(); i++) {
+    std::vector<plKey> keys = manager->getKeys(locs[i], kDrawableSpans);
+    for(int j = 0; j < keys.size(); j++)
+      if(keys[j].Exists()) {
+        plDrawableSpans *spans = plPointer<plDrawableSpans>(keys[j]);
+        rlevels.insert(spans->getRenderLevel());
+      }
+  }
+    
+  
+  foreach(unsigned int rl, rlevels)
+    for(int i = 0; i < current_age->layerCount(); i++)
+      for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
+        current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw3D, rl);
 }
 
 void ACGLWidget::keyPressEvent(QKeyEvent *event)

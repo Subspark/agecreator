@@ -36,7 +36,7 @@ public:
   virtual ~ACSpawnPoint();
 
   virtual QIcon icon() const;
-  virtual void draw(DrawMode mode) const;
+  virtual void draw(DrawMode mode, unsigned int rlevel = 0xFFFFFFFF) const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);
 

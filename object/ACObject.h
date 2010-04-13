@@ -53,7 +53,7 @@ public:
   plKey key() const;
 
   void contextMenu(QContextMenuEvent *event);
-  virtual void draw(DrawMode mode) const;
+  virtual void draw(DrawMode mode, unsigned int rlevel = 0xFFFFFFFF) const;
   virtual QIcon icon() const;
   virtual void registerWithPage(ACPage *page);
   virtual void unregisterFromPage(ACPage *page);
