@@ -70,16 +70,16 @@ QIcon ACSpawnPoint::icon() const
   return ACIcon("list-add-user");
 }
 
-void ACSpawnPoint::draw(DrawMode mode) const
+void ACSpawnPoint::draw(DrawMode mode, unsigned int rlevel) const
 {
   GLboolean current_cull;
   glGetBooleanv(GL_CULL_FACE, &current_cull);
   if(current_cull) {
     glDisable(GL_CULL_FACE);
-    hector->draw(mode);
+    hector->draw(mode, rlevel);
     glEnable(GL_CULL_FACE);
   } else {
-    hector->draw(mode);
+    hector->draw(mode, rlevel);
   }
 }
 
