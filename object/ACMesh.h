@@ -27,12 +27,17 @@ class plGBufferVertex;
 class ACMesh
 {
 public:
+  enum {
+    DRAW_MATERIAL=1,
+    DRAW_COLOR=2,
+    DRAW_HILIGHT=4,
+  };
   ACMesh(const hsTArray<plGBufferVertex> &verts, const hsTArray<unsigned short> &indices, unsigned char fmt, plDrawableSpans *spans);
   //ACMesh(const ACMesh &other, plDrawableSpans *new_spans);
   ACMesh(size_t icicle_id_, plKey spans_);
   ~ACMesh();
 
-  void draw(plKey ci = plKey(), bool material_setup=false, bool set_color=false) const;
+  void draw(plKey ci = plKey(), unsigned int draw_flags = 0) const;
   //plKey material() const;
   //void setMaterial(plKey new_mat);
   unsigned int renderLevel() const;

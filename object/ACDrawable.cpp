@@ -49,9 +49,8 @@ ACDrawable::ACDrawable(const QString &name)
   scene_object->setDrawInterface(drawi->getKey());
   
   QAction *action;
-  menu->addAction(tr("World Object Properties"));
-  action = menu->addAction(tr("Manage Submeshes"));
-  connect(action, SIGNAL(triggered(bool)), this, SLOT(manageMeshes()));
+  action = menu->addAction(tr("Surface Properties"));
+  connect(action, SIGNAL(triggered(bool)), this, SLOT(surfaceProperties()));
 }
 
 ACDrawable::ACDrawable(plKey key)
@@ -130,7 +129,7 @@ void ACDrawable::draw(DrawMode mode) const
   //TODO: draw only for the correct renderlevel
   foreach(ACMesh *mesh, meshes) {
     if(mode == Draw3D)
-      mesh->draw(scene_object->getCoordInterface(), true, true);
+      mesh->draw(scene_object->getCoordInterface(), ACMesh::DRAW_MATERIAL | ACMesh::DRAW_COLOR);
     else
       mesh->draw(scene_object->getCoordInterface());
   }

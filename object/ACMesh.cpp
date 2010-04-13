@@ -134,12 +134,12 @@ ACMesh::~ACMesh()
   meshes.remove(this);
 }
 
-void ACMesh::draw(plKey ci, bool material_setup, bool set_color) const
+void ACMesh::draw(plKey ci, unsigned int draw_flags) const
 {
   plDrawableSpans *span = plPointer<plDrawableSpans>(spans);
   unsigned int uvw_id;
   plIcicle *icicle = span->getIcicle(icicle_id);
-  if(material_setup && icicle->getMaterialIdx() < span->getMaterials().getSize()) {
+  if(draw_flags & DRAW_MATERIAL && icicle->getMaterialIdx() < span->getMaterials().getSize()) {
     hsGMaterial *mat = plPointer<hsGMaterial>(span->getMaterials()[icicle->getMaterialIdx()]);
     plLayer *layer = plPointer<plLayer>(mat->getLayers()[0]);
     unsigned int new_layer = 1;
@@ -162,7 +162,7 @@ void ACMesh::draw(plKey ci, bool material_setup, bool set_color) const
     glMatrixMode(GL_TEXTURE);
     glLoadMatrixf(layer->getTransform().glMatrix());
     glMatrixMode(GL_MODELVIEW);
-  } else if(set_color) {
+  } else if(draw_flags & DRAW_COLOR) {
     glProgramLocalParameter4fARB(GL_VERTEX_PROGRAM_ARB, 0, 1.0f, 1.0f, 1.0f, 1.0f);
   }
   hsMatrix44 mat;
@@ -194,7 +194,7 @@ void ACMesh::draw(plKey ci, bool material_setup, bool set_color) const
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glTexCoord3f(0.0f, 0.0f, 0.0f);
   }
-  if(set_color) {
+  if(draw_flags & DRAW_COLOR) {
     glColorPointer(4, GL_UNSIGNED_BYTE, buff->getStride(), vertex_data + normal_offset + 3*sizeof(float));
   }
   glDrawElements(GL_TRIANGLES, icicle->getILength(), GL_UNSIGNED_SHORT, &(index_data[icicle->getIStartIdx()]));
