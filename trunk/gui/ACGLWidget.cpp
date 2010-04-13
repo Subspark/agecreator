@@ -172,9 +172,10 @@ void ACGLWidget::paintGL()
         rlevels.insert(spans->getRenderLevel());
       }
   }
-    
-  
-  foreach(unsigned int rl, rlevels)
+
+  QList<unsigned int> rls = rlevels.toList();
+  qSort(rls.begin(), rls.end());
+  foreach(unsigned int rl, rls)
     for(int i = 0; i < current_age->layerCount(); i++)
       for(int j = 0; j < current_age->getLayer(i)->objectCount(); j++)
         current_age->getLayer(i)->getObject(j)->draw(ACObject::Draw3D, rl);
