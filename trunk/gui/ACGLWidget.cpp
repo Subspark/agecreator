@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QSet>
 
 #include <cmath>
 
