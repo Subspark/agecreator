@@ -128,7 +128,9 @@ void ACDrawable::draw(DrawMode mode, unsigned int rlevel) const
 {
   //TODO: draw only for the correct renderlevel
   foreach(ACMesh *mesh, meshes) {
-    if(mode == Draw3D && (rlevel == 0xFFFFFFFF || mesh->renderLevel() == rlevel))
+    if(rlevel != mesh->renderLevel() && rlevel != 0xFFFFFFFF)
+      continue;
+    if(mode == Draw3D)
       mesh->draw(scene_object->getCoordInterface(), ACMesh::DRAW_MATERIAL | ACMesh::DRAW_COLOR);
     else if (mode == Draw2D)
       mesh->draw(scene_object->getCoordInterface());
