@@ -166,6 +166,7 @@ void ACMesh::draw(plKey ci, unsigned int draw_flags) const
     glMatrixMode(GL_MODELVIEW);
   } else if(draw_flags & DRAW_COLOR) {
     glProgramLocalParameter4fARB(GL_VERTEX_PROGRAM_ARB, 0, 1.0f, 1.0f, 1.0f, 1.0f);
+    glDisable(GL_TEXTURE_2D);
   }
   hsMatrix44 mat;
   if(ci.Exists()) {
