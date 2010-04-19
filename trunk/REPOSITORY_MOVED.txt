@@ -1,0 +1,6 @@
+The Age Creator repository has been moved to a Mercurial repository 
+stored on a different server.
+
+The hg URL is: http://dev.zrax.net/hg/AgeCreator
+
+Sorry for any inconvience.
