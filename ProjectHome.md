@@ -1,0 +1,5 @@
+**This program is in extremely early stages of development, and shouldn't be used except by developers or the very curious. Don't blame me if an age you export blows up your Uru installation.**
+
+Age Creator is a new tool for creating Uru ages. It's completely standalone, and is in extremely early stages of development. The big design goal is to abstract Plasma objects away whenever possible, through GUIs and grouping sets of related Plasma objects into a single meta-object that the user sees. It's really too early in development to give much more detail - I just haven't decided on a lot of things yet.
+
+All objects are stored internally using [libHSPlasma](http://code.google.com/p/libhsplasma). The "export" process is just a matter of saving those objects into the proper Plasma files (.age and .prp). In theory this also means it will be possible to import any age, modify it, and re-export without losing any information, since any Plasma object that isn't supported will be ignored by the program. In practice this may not always be the case, especially in regards to Dspans.
